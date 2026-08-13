@@ -1,0 +1,88 @@
+{
+    "dataRoles": [
+        {
+            "displayName": "Value",
+            "name": "mainValue",
+            "kind": "Measure",
+            "displayNameKey": "mainValue"
+        },
+        {
+            "displayName": "Delta",
+            "name": "deltaValue",
+            "kind": "Measure",
+            "displayNameKey": "deltaValue"
+        },
+        {
+            "displayName": "Subtitle",
+            "name": "subtitle",
+            "kind": "Measure",
+            "displayNameKey": "subtitle"
+        }
+    ],
+    "objects": {
+        "cardStyle": {
+            "properties": {
+                "accentColor": {
+                    "type": { "fill": { "solid": { "color": true } } }
+                },
+                "direction": {
+                    "type": { "enumeration": [
+                        { "value": "up", "displayName": "Up is good" },
+                        { "value": "down", "displayName": "Down is good" },
+                        { "value": "neutral", "displayName": "Neutral" }
+                    ]}
+                },
+                "caption": {
+                    "type": { "text": true }
+                },
+                "valueFormat": {
+                    "type": { "text": true }
+                },
+                "emptyDefault": {
+                    "type": { "text": true }
+                },
+                "headerMode": {
+                    "type": { "bool": true }
+                },
+                "headerColor": {
+                    "type": { "fill": { "solid": { "color": true } } }
+                },
+                "headerSize": {
+                    "type": { "numeric": true }
+                },
+                "headerBg": {
+                    "type": { "fill": { "solid": { "color": true } } }
+                },
+                "fontSize": {
+                    "type": { "numeric": true }
+                },
+                "goodColor": {
+                    "type": { "fill": { "solid": { "color": true } } }
+                },
+                "badColor": {
+                    "type": { "fill": { "solid": { "color": true } } }
+                },
+                "neutralColor": {
+                    "type": { "fill": { "solid": { "color": true } } }
+                }
+            }
+        }
+    },
+    "dataViewMappings": [
+        {
+            "conditions": [
+                { "mainValue": { "max": 1 }, "deltaValue": { "max": 1 }, "subtitle": { "max": 1 } }
+            ],
+            "categorical": {
+                "values": {
+                    "select": [
+                        { "bind": { "to": "mainValue" } },
+                        { "bind": { "to": "deltaValue" } },
+                        { "bind": { "to": "subtitle" } }
+                    ]
+                }
+            }
+        }
+    ],
+    "privileges": []
+}
