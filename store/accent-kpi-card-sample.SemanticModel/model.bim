@@ -52,9 +52,9 @@
             ]
           },
           {
-            "name": "OrdersValue",
+            "name": "TicketsValue",
             "dataType": "int64",
-            "sourceColumn": "OrdersValue",
+            "sourceColumn": "TicketsValue",
             "summarizeBy": "none",
             "isHidden": false,
             "annotations": [
@@ -65,9 +65,9 @@
             ]
           },
           {
-            "name": "MarginValue",
+            "name": "OnTimeValue",
             "dataType": "double",
-            "sourceColumn": "MarginValue",
+            "sourceColumn": "OnTimeValue",
             "summarizeBy": "none",
             "isHidden": false,
             "annotations": [
@@ -82,40 +82,48 @@
           {
             "name": "Revenue",
             "expression": "SUM('Sales'[RevenueValue])",
-            "formatString": "#,0.0"
+            "formatString": "#,0"
           },
           {
-            "name": "Revenue MoM",
+            "name": "Revenue change",
             "expression": "VAR cur = CALCULATE ( SUM ( 'Sales'[RevenueValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )\nVAR prev = CALCULATE ( SUM ( 'Sales'[RevenueValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )\nRETURN DIVIDE ( cur - prev, prev )",
             "formatString": "0.0%"
           },
           {
-            "name": "Orders",
-            "expression": "SUM('Sales'[OrdersValue])",
+            "name": "Open tickets",
+            "expression": "CALCULATE ( SUM ( 'Sales'[TicketsValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )",
             "formatString": "#,0"
           },
           {
-            "name": "Orders MoM",
-            "expression": "VAR cur = CALCULATE ( SUM ( 'Sales'[OrdersValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )\nVAR prev = CALCULATE ( SUM ( 'Sales'[OrdersValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )\nRETURN DIVIDE ( cur - prev, prev )",
+            "name": "Tickets change",
+            "expression": "CALCULATE ( SUM ( 'Sales'[TicketsValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )\n    - CALCULATE ( SUM ( 'Sales'[TicketsValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "On time",
+            "expression": "CALCULATE ( AVERAGE ( 'Sales'[OnTimeValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )",
             "formatString": "0.0%"
           },
           {
-            "name": "Margin",
-            "expression": "AVERAGE('Sales'[MarginValue])",
+            "name": "On time change",
+            "expression": "CALCULATE ( AVERAGE ( 'Sales'[OnTimeValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )\n    - CALCULATE ( AVERAGE ( 'Sales'[OnTimeValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )",
             "formatString": "0.0%"
           },
           {
-            "name": "Margin MoM",
-            "expression": "VAR cur = CALCULATE ( AVERAGE ( 'Sales'[MarginValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )\nVAR prev = CALCULATE ( AVERAGE ( 'Sales'[MarginValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )\nRETURN cur - prev",
-            "formatString": "0.0%"
-          },
-          {
-            "name": "Subtitle",
-            "expression": "\"vs last month\""
-          },
-          {
-            "name": "No rows yet",
+            "name": "Overdue actions",
             "expression": "BLANK()"
+          },
+          {
+            "name": "YTD",
+            "expression": "\"YTD\""
+          },
+          {
+            "name": "This week",
+            "expression": "\"this week\""
+          },
+          {
+            "name": "This month",
+            "expression": "\"this month\""
           }
         ],
         "partitions": [
@@ -126,8 +134,8 @@
               "type": "m",
               "expression": [
                 "let",
-                "    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"TY7JDcAgDAR74U2QDwymFkT/bWQxicRjMVqNxp4zCUl7SFNOO8xOhfBxFrxUFHPlH6vodliqHcw4MBl+YYZuh5UksBELYFO7sIauhc392HwcrPKFdXQ9bKMe27dUDbetFw==\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Month = _t, MonthNo = _t, RevenueValue = _t, OrdersValue = _t, MarginValue = _t]),",
-                "    #\"Changed Type\" = Table.TransformColumnTypes(Source,{{\"Month\", type text}, {\"MonthNo\", Int64.Type}, {\"RevenueValue\", type number}, {\"OrdersValue\", Int64.Type}, {\"MarginValue\", type number}})",
+                "    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"Tc3RDcAgCATQXfi2DSKgztK4/xrlgiZ+nCHkcX4fCYs/3KgQIs2ZOQaTePidVmmVozR2iCin0r7VuJThPLsCQmkqn5fy2CEyTtdM1e1S6Edk1u5Qbf/oSmv9\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Month = _t, MonthNo = _t, RevenueValue = _t, TicketsValue = _t, OnTimeValue = _t]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(Source,{{\"Month\", type text}, {\"MonthNo\", Int64.Type}, {\"RevenueValue\", type number}, {\"TicketsValue\", Int64.Type}, {\"OnTimeValue\", type number}})",
                 "in",
                 "    #\"Changed Type\""
               ]

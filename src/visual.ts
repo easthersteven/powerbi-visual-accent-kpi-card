@@ -72,6 +72,11 @@ export class Visual implements IVisual {
             const direction = (objects?.direction as string) || "neutral";
             const caption = (objects?.caption as string) || "";
             const valueFormat = (objects?.valueFormat as string) || "";
+            const deltaFormat = (objects?.deltaFormat as string) || "";
+            const fmtOpts = {
+                currencyCode: (objects?.currencyCode as string) || "",
+                compact: (objects?.compact as boolean) || false,
+            };
             const fontSize = (objects?.fontSize as number) ?? 30;
             const goodColor = (objects?.goodColor as { solid?: { color?: string } })?.solid?.color || "#0F7A2C";
             const badColor = (objects?.badColor as { solid?: { color?: string } })?.solid?.color || "#9E2F24";
@@ -101,8 +106,8 @@ export class Visual implements IVisual {
             // like a real value, so "0" renders as "0.0%" in percent mode).
             const hasMain = [...vals].some((col) => col.source.roles?.["mainValue"]);
             const formattedValue = mainVal == null && hasMain
-                ? resolveEmptyDefault(emptyDefault, valueFormat, this.locale)
-                : formatMainValue(mainVal, valueFormat, this.locale);
+                ? resolveEmptyDefault(emptyDefault, valueFormat, this.locale, fmtOpts)
+                : formatMainValue(mainVal, valueFormat, this.locale, fmtOpts);
 
             const accent = el("div", "kpi-accent");
             accent.style.background = accentColor;
@@ -130,7 +135,7 @@ export class Visual implements IVisual {
             if (deltaVal != null) {
                 const d = typeof deltaVal === "number" ? deltaVal : parseFloat(String(deltaVal));
                 if (!isNaN(d)) {
-                    const delta = deltaDisplay(d, direction, valueFormat, this.locale);
+                    const delta = deltaDisplay(d, direction, valueFormat, this.locale, fmtOpts, deltaFormat);
                     const deltaEl = el("span", "delta delta-" + delta.kind, delta.text);
                     deltaEl.style.color = delta.kind === "good" ? goodColor : delta.kind === "bad" ? badColor : neutralColor;
                     deltaEl.style.fontSize = (fontSize * 0.37) + "px";

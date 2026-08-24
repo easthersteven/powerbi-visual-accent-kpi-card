@@ -1,8 +1,8 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
-  "name": "vzRevenue",
+  "name": "vzOnTime",
   "position": {
-    "x": 40,
+    "x": 648,
     "y": 156,
     "z": 0,
     "width": 288,
@@ -23,11 +23,11 @@
                       "Entity": "Sales"
                     }
                   },
-                  "Property": "Revenue"
+                  "Property": "On time"
                 }
               },
-              "queryRef": "Sales.Revenue",
-              "nativeQueryRef": "Revenue"
+              "queryRef": "Sales.On time",
+              "nativeQueryRef": "On time"
             }
           ]
         },
@@ -41,11 +41,11 @@
                       "Entity": "Sales"
                     }
                   },
-                  "Property": "Revenue change"
+                  "Property": "On time change"
                 }
               },
-              "queryRef": "Sales.Revenue change",
-              "nativeQueryRef": "Revenue change"
+              "queryRef": "Sales.On time change",
+              "nativeQueryRef": "On time change"
             }
           ]
         },
@@ -59,11 +59,11 @@
                       "Entity": "Sales"
                     }
                   },
-                  "Property": "YTD"
+                  "Property": "This month"
                 }
               },
-              "queryRef": "Sales.YTD",
-              "nativeQueryRef": "YTD"
+              "queryRef": "Sales.This month",
+              "nativeQueryRef": "This month"
             }
           ]
         }
@@ -76,7 +76,7 @@
             "caption": {
               "expr": {
                 "Literal": {
-                  "Value": "'Revenue'"
+                  "Value": "'On-time delivery'"
                 }
               }
             },
@@ -92,7 +92,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F908C'"
+                      "Value": "'#016C8D'"
                     }
                   }
                 }
@@ -101,28 +101,7 @@
             "valueFormat": {
               "expr": {
                 "Literal": {
-                  "Value": "'currency'"
-                }
-              }
-            },
-            "currencyCode": {
-              "expr": {
-                "Literal": {
-                  "Value": "'AUD'"
-                }
-              }
-            },
-            "compact": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "deltaFormat": {
-              "expr": {
-                "Literal": {
-                  "Value": "'percentChange'"
+                  "Value": "'percent'"
                 }
               }
             }

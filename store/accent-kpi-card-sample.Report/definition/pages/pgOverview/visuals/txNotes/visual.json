@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
   "name": "txNotes",
   "position": {
-    "x": 450,
-    "y": 372,
+    "x": 40,
+    "y": 400,
     "z": 0,
-    "width": 790,
-    "height": 216,
+    "width": 1200,
+    "height": 200,
     "tabOrder": 0
   },
   "visual": {
@@ -31,7 +31,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Direction aware badge - set 'Down is good' on a defect or cost metric and a fall turns green without any conditional formatting.",
+                    "value": "Currency and compact notation - revenue is 1,284,000 rendered as $1.28M. Symbol placement and separators follow the host locale; the ISO code is a Format pane setting.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"
@@ -42,7 +42,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Value when empty - the bottom-left card is bound to a measure that returns BLANK(). Instead of an empty card it shows the configured default, formatted like a real value.",
+                    "value": "A delta that reads differently from the value - the revenue card shows a percentage change on a currency value. Set deltaFormat to percentChange.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"
@@ -53,7 +53,29 @@
               {
                 "textRuns": [
                   {
-                    "value": "Header mode - flip headerMode on to render the caption as a crisp text header, sharper than a native text box under page scaling.",
+                    "value": "Direction aware colour - open tickets is a 'down is good' metric, so a fall of 12 shows green, while on-time delivery slipping 1.1pp shows red.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#333333"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Percentage points - a change in a rate is reported in pp, not percent, because that is what the change actually means.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#333333"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Value when empty - the last card is bound to a measure returning BLANK(). Instead of an empty card it shows the configured default, formatted like a real value.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"

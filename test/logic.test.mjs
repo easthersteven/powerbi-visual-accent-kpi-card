@@ -64,3 +64,44 @@ test("deltaDisplay shows a dash arrow for zero", () => {
     assert.equal(deltaDisplay(0, "up", "", "en-US").text, "- 0");
     assert.equal(deltaDisplay(0, "up", "", "en-US").kind, "neutral");
 });
+
+test("formatMainValue formats currency with the host locale", () => {
+    assert.equal(formatMainValue(1284000, "currency", "en-US", { currencyCode: "USD" }), "$1,284,000");
+    assert.equal(formatMainValue(1284000, "currency", "en-AU", { currencyCode: "AUD" }), "$1,284,000");
+    assert.equal(formatMainValue(1284000, "currency", "en-US", { currencyCode: "GBP" }), "£1,284,000");
+});
+
+test("formatMainValue abbreviates large numbers when compact is set", () => {
+    assert.equal(formatMainValue(1284000, "currency", "en-US", { currencyCode: "USD", compact: true }), "$1.28M");
+    assert.equal(formatMainValue(1284000, "", "en-US", { compact: true }), "1.28M");
+    assert.equal(formatMainValue(37, "", "en-US", { compact: true }), "37");
+});
+
+test("formatMainValue falls back to a plain number for an invalid currency code", () => {
+    assert.equal(formatMainValue(1234, "currency", "en-US", { currencyCode: "not a code" }), "$1,234");
+    assert.equal(formatMainValue(1234, "currency", "en-US", {}), "$1,234");
+});
+
+test("resolveEmptyDefault formats a numeric default as currency", () => {
+    assert.equal(resolveEmptyDefault("0", "currency", "en-US", { currencyCode: "USD" }), "$0");
+});
+
+test("deltaDisplay reports percent deltas in percentage points", () => {
+    assert.equal(deltaDisplay(0.011, "up", "percent").text, "▲ 1.1pp");
+});
+
+test("deltaDisplay can carry a percentage change on a currency card", () => {
+    const d = deltaDisplay(0.042, "up", "currency", "en-US", { currencyCode: "AUD" }, "percentChange");
+    assert.equal(d.text, "▲ 4.2%");
+    assert.equal(d.kind, "good");
+});
+
+test("deltaDisplay formats a currency delta as currency", () => {
+    const d = deltaDisplay(-52000, "up", "currency", "en-US", { currencyCode: "USD", compact: true });
+    assert.equal(d.text, "▼ $52K");
+    assert.equal(d.kind, "bad");
+});
+
+test("deltaDisplay follows the value format when no delta format is set", () => {
+    assert.equal(deltaDisplay(12, "down", "", "en-US").text, "▲ 12");
+});

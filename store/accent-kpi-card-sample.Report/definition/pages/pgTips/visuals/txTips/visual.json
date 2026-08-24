@@ -5,8 +5,8 @@
     "x": 40,
     "y": 96,
     "z": 0,
-    "width": 900,
-    "height": 500,
+    "width": 1200,
+    "height": 520,
     "tabOrder": 0
   },
   "visual": {
@@ -31,7 +31,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "valueFormat accepts 'percent' (one decimal), 'decimal1' (one decimal), or empty for a whole number with thousands grouping. Separators follow the host locale.",
+                    "value": "valueFormat accepts \"currency\", \"percent\" (one decimal), \"decimal1\", or empty for a whole number with thousands grouping. For currency, set currencyCode to an ISO 4217 code such as AUD, GBP or USD - an unrecognised code falls back to a plain number rather than showing the wrong symbol.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"
@@ -42,7 +42,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Percent deltas read as points",
+                    "value": "Compact notation",
                     "textStyle": {
                       "fontSize": "13pt",
                       "fontWeight": "bold",
@@ -54,7 +54,30 @@
               {
                 "textRuns": [
                   {
-                    "value": "When the value is a percentage, the badge shows the delta in percentage points ('pp'), which is what a change in a rate actually means.",
+                    "value": "Turn on compact for headline figures: 1,284,000 becomes 1.28M and 52,000 becomes 52K. Small numbers are left alone, so 37 stays 37.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#333333"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Percent values versus percentage change",
+                    "textStyle": {
+                      "fontSize": "13pt",
+                      "fontWeight": "bold",
+                      "color": "#1F908C"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "A percent card reports its delta in percentage points (\"1.1pp\") because a rate moving from 97.5% to 96.4% has fallen 1.1 points, not 1.1 percent. When the value is an absolute quantity and you want a proportional change, set deltaFormat to percentChange.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"
@@ -77,7 +100,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Set the 'No data' default to 0 for counts and to n/a for things that genuinely have no value yet. Any non-numeric default is shown as typed.",
+                    "value": "Set the \"No data\" default to 0 for counts and to n/a for things that genuinely have no value yet. Any non-numeric default is shown as typed.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"

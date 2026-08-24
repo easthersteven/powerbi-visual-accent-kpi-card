@@ -38,6 +38,15 @@
                 "valueFormat": {
                     "type": { "text": true }
                 },
+                "currencyCode": {
+                    "type": { "text": true }
+                },
+                "compact": {
+                    "type": { "bool": true }
+                },
+                "deltaFormat": {
+                    "type": { "text": true }
+                },
                 "emptyDefault": {
                     "type": { "text": true }
                 },

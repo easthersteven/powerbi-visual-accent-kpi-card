@@ -1,8 +1,8 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
-  "name": "vzRevenue",
+  "name": "vzTickets",
   "position": {
-    "x": 40,
+    "x": 344,
     "y": 156,
     "z": 0,
     "width": 288,
@@ -23,11 +23,11 @@
                       "Entity": "Sales"
                     }
                   },
-                  "Property": "Revenue"
+                  "Property": "Open tickets"
                 }
               },
-              "queryRef": "Sales.Revenue",
-              "nativeQueryRef": "Revenue"
+              "queryRef": "Sales.Open tickets",
+              "nativeQueryRef": "Open tickets"
             }
           ]
         },
@@ -41,11 +41,11 @@
                       "Entity": "Sales"
                     }
                   },
-                  "Property": "Revenue change"
+                  "Property": "Tickets change"
                 }
               },
-              "queryRef": "Sales.Revenue change",
-              "nativeQueryRef": "Revenue change"
+              "queryRef": "Sales.Tickets change",
+              "nativeQueryRef": "Tickets change"
             }
           ]
         },
@@ -59,11 +59,11 @@
                       "Entity": "Sales"
                     }
                   },
-                  "Property": "YTD"
+                  "Property": "This week"
                 }
               },
-              "queryRef": "Sales.YTD",
-              "nativeQueryRef": "YTD"
+              "queryRef": "Sales.This week",
+              "nativeQueryRef": "This week"
             }
           ]
         }
@@ -76,14 +76,14 @@
             "caption": {
               "expr": {
                 "Literal": {
-                  "Value": "'Revenue'"
+                  "Value": "'Open tickets'"
                 }
               }
             },
             "direction": {
               "expr": {
                 "Literal": {
-                  "Value": "'up'"
+                  "Value": "'down'"
                 }
               }
             },
@@ -92,37 +92,9 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F908C'"
+                      "Value": "'#D9822B'"
                     }
                   }
-                }
-              }
-            },
-            "valueFormat": {
-              "expr": {
-                "Literal": {
-                  "Value": "'currency'"
-                }
-              }
-            },
-            "currencyCode": {
-              "expr": {
-                "Literal": {
-                  "Value": "'AUD'"
-                }
-              }
-            },
-            "compact": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "deltaFormat": {
-              "expr": {
-                "Literal": {
-                  "Value": "'percentChange'"
                 }
               }
             }

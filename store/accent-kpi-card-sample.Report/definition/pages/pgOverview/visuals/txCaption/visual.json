@@ -1,12 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
-  "name": "txLead",
+  "name": "txCaption",
   "position": {
     "x": 40,
-    "y": 80,
+    "y": 340,
     "z": 0,
     "width": 1200,
-    "height": 60,
+    "height": 44,
     "tabOrder": 0
   },
   "visual": {
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "One card per metric: accent bar, formatted value, subtitle, and a delta badge that colours itself by whether up or down is good for that metric.",
+                    "value": "Accent bar, formatted value, subtitle, direction-aware delta badge, and a configurable default when the measure is blank (shown right: \"Value when empty\" = 0).",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"

@@ -5,7 +5,7 @@ A Power BI custom visual: a compact KPI card with a coloured accent bar, a forma
 ## Features
 
 - Accent bar across the top of the card with a configurable colour.
-- Main value with selectable formatting: percent (one decimal), one decimal place, or whole number with thousands grouping (host locale aware).
+- Main value with selectable formatting: currency (host locale placement, configurable ISO code), percent (one decimal), one decimal place, or whole number with thousands grouping (host locale aware). Optional compact notation abbreviates large numbers ($1.28M).
 - Optional subtitle rendered beside the value.
 - Optional caption above the value.
 - Delta badge with an up or down arrow, coloured by whether the movement is good or bad for the metric ("Up is good", "Down is good", or "Neutral"). Percent deltas are shown in percentage points ("pp").
@@ -32,7 +32,10 @@ Set via the visual's objects (Format pane and report themes):
 | cardStyle | accentColor | Colour of the accent bar. |
 | cardStyle | direction | "up", "down", or "neutral": which movement is good. |
 | cardStyle | caption | Caption text above the value (or the header text in header mode). |
-| cardStyle | valueFormat | "percent", "decimal1", or empty for whole numbers. |
+| cardStyle | valueFormat | "currency", "percent", "decimal1", or empty for whole numbers. |
+| cardStyle | currencyCode | ISO 4217 code used by the currency format (default USD, e.g. AUD, GBP). |
+| cardStyle | compact | Abbreviate large numbers: 1284000 renders as 1.28M (or $1.28M). |
+| cardStyle | deltaFormat | Overrides the badge format: "percentChange" shows 4.2% on a currency card; empty follows valueFormat. |
 | cardStyle | emptyDefault | Value shown when the main measure returns blank (default "0"). |
 | cardStyle | fontSize | Value font size; caption, subtitle, and delta scale from it. |
 | cardStyle | goodColor / badColor / neutralColor | Delta badge text colours. |
