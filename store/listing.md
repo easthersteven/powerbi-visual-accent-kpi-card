@@ -16,7 +16,7 @@ Accent KPI Card is a clean, crisp KPI tile: a coloured accent bar, a large forma
 Key features:
 
 - **Direction aware delta badge.** Bind a delta measure and tell the card whether up is good, down is good or neutral. The badge picks the right colour automatically, so a falling defect count shows green.
-- **Value formatting.** Format the main value as a number, percentage or currency with a simple format string, with locale aware separators.
+- **Value formatting.** Show the value as a percentage, to one decimal place, or as a whole number with locale aware thousands separators. Percent deltas are reported in percentage points ("pp"), which is what a change in a rate actually means.
 - **Value when empty.** When the measure returns blank (for example no rows yet this month), the card shows a configurable default instead of (Blank). A numeric default such as 0 is formatted exactly like a real value.
 - **Header mode.** Flip a toggle and the card renders its caption as a crisp text header, sharper than native text boxes under page scaling on high DPI displays.
 - **Styleable.** Accent colour, good/bad/neutral colours, font size and header styling are all in the Format pane.
