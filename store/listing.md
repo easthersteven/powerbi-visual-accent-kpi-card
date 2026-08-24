@@ -28,7 +28,8 @@ Ideal for KPI strips across the top of a dashboard where consistency, crisp text
 
 **Help link:** https://github.com/easthersteven/powerbi-visual-accent-kpi-card#readme
 **Privacy policy link:** https://github.com/easthersteven/powerbi-visual-accent-kpi-card/blob/main/PRIVACY.md
-**Support link:** https://github.com/easthersteven/powerbi-visual-accent-kpi-card/issues
+**Support document link:** https://github.com/easthersteven/powerbi-visual-accent-kpi-card/blob/main/SUPPORT.md
+**Support (issues) link:** https://github.com/easthersteven/powerbi-visual-accent-kpi-card/issues
 
 **Media:**
 - Logo 300x300: `store/icon-300x300.png`
