@@ -1,0 +1,106 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "vzOrders",
+  "position": {
+    "x": 450,
+    "y": 160,
+    "z": 0,
+    "width": 380,
+    "height": 180,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E",
+    "query": {
+      "queryState": {
+        "mainValue": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Sales"
+                    }
+                  },
+                  "Property": "Orders"
+                }
+              },
+              "queryRef": "Sales.Orders",
+              "nativeQueryRef": "Orders"
+            }
+          ]
+        },
+        "deltaValue": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Sales"
+                    }
+                  },
+                  "Property": "Orders MoM"
+                }
+              },
+              "queryRef": "Sales.Orders MoM",
+              "nativeQueryRef": "Orders MoM"
+            }
+          ]
+        },
+        "subtitle": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Sales"
+                    }
+                  },
+                  "Property": "Subtitle"
+                }
+              },
+              "queryRef": "Sales.Subtitle",
+              "nativeQueryRef": "Subtitle"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "cardStyle": [
+        {
+          "properties": {
+            "caption": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Orders'"
+                }
+              }
+            },
+            "direction": {
+              "expr": {
+                "Literal": {
+                  "Value": "'up'"
+                }
+              }
+            },
+            "accentColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#023864'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

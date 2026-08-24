@@ -1,0 +1,113 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "vzRevenue",
+  "position": {
+    "x": 40,
+    "y": 160,
+    "z": 0,
+    "width": 380,
+    "height": 180,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E",
+    "query": {
+      "queryState": {
+        "mainValue": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Sales"
+                    }
+                  },
+                  "Property": "Revenue"
+                }
+              },
+              "queryRef": "Sales.Revenue",
+              "nativeQueryRef": "Revenue"
+            }
+          ]
+        },
+        "deltaValue": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Sales"
+                    }
+                  },
+                  "Property": "Revenue MoM"
+                }
+              },
+              "queryRef": "Sales.Revenue MoM",
+              "nativeQueryRef": "Revenue MoM"
+            }
+          ]
+        },
+        "subtitle": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Sales"
+                    }
+                  },
+                  "Property": "Subtitle"
+                }
+              },
+              "queryRef": "Sales.Subtitle",
+              "nativeQueryRef": "Subtitle"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "cardStyle": [
+        {
+          "properties": {
+            "caption": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Revenue (£k)'"
+                }
+              }
+            },
+            "direction": {
+              "expr": {
+                "Literal": {
+                  "Value": "'up'"
+                }
+              }
+            },
+            "accentColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1F908C'"
+                    }
+                  }
+                }
+              }
+            },
+            "valueFormat": {
+              "expr": {
+                "Literal": {
+                  "Value": "'decimal1'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,175 @@
+{
+  "compatibilityLevel": 1550,
+  "model": {
+    "culture": "en-GB",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "sourceQueryCulture": "en-GB",
+    "tables": [
+      {
+        "name": "Sales",
+        "columns": [
+          {
+            "name": "Month",
+            "dataType": "string",
+            "sourceColumn": "Month",
+            "summarizeBy": "none",
+            "isHidden": false,
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "MonthNo",
+            "dataType": "int64",
+            "sourceColumn": "MonthNo",
+            "summarizeBy": "none",
+            "isHidden": false,
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "RevenueValue",
+            "dataType": "double",
+            "sourceColumn": "RevenueValue",
+            "summarizeBy": "none",
+            "isHidden": false,
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "OrdersValue",
+            "dataType": "int64",
+            "sourceColumn": "OrdersValue",
+            "summarizeBy": "none",
+            "isHidden": false,
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "MarginValue",
+            "dataType": "double",
+            "sourceColumn": "MarginValue",
+            "summarizeBy": "none",
+            "isHidden": false,
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          }
+        ],
+        "measures": [
+          {
+            "name": "Revenue",
+            "expression": "SUM('Sales'[RevenueValue])",
+            "formatString": "#,0.0",
+            "annotations": []
+          },
+          {
+            "name": "Revenue MoM",
+            "expression": "VAR cur = CALCULATE ( SUM ( 'Sales'[RevenueValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )\nVAR prev = CALCULATE ( SUM ( 'Sales'[RevenueValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )\nRETURN DIVIDE ( cur - prev, prev )",
+            "formatString": "0.0%",
+            "annotations": []
+          },
+          {
+            "name": "Orders",
+            "expression": "SUM('Sales'[OrdersValue])",
+            "formatString": "#,0",
+            "annotations": []
+          },
+          {
+            "name": "Orders MoM",
+            "expression": "VAR cur = CALCULATE ( SUM ( 'Sales'[OrdersValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )\nVAR prev = CALCULATE ( SUM ( 'Sales'[OrdersValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )\nRETURN DIVIDE ( cur - prev, prev )",
+            "formatString": "0.0%",
+            "annotations": []
+          },
+          {
+            "name": "Margin",
+            "expression": "AVERAGE('Sales'[MarginValue])",
+            "formatString": "0.0%",
+            "annotations": []
+          },
+          {
+            "name": "Margin MoM",
+            "expression": "VAR cur = CALCULATE ( AVERAGE ( 'Sales'[MarginValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )\nVAR prev = CALCULATE ( AVERAGE ( 'Sales'[MarginValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )\nRETURN cur - prev",
+            "formatString": "0.0%",
+            "annotations": []
+          },
+          {
+            "name": "Subtitle",
+            "expression": "\"vs last month\"",
+            "annotations": [
+              {
+                "name": "PBI_FormatHint",
+                "value": "{\"isGeneralNumber\":true}"
+              }
+            ]
+          },
+          {
+            "name": "No rows yet",
+            "expression": "BLANK()",
+            "annotations": [
+              {
+                "name": "PBI_FormatHint",
+                "value": "{\"isGeneralNumber\":true}"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Sales",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"TY7JDcAgDAR74U2QDwymFkT/bWQxicRjMVqNxp4zCUl7SFNOO8xOhfBxFrxUFHPlH6vodliqHcw4MBl+YYZuh5UksBELYFO7sIauhc392HwcrPKFdXQ9bKMe27dUDbetFw==\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Month = _t, MonthNo = _t, RevenueValue = _t, OrdersValue = _t, MarginValue = _t]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(Source,{{\"Month\", type text}, {\"MonthNo\", Int64.Type}, {\"RevenueValue\", type number}, {\"OrdersValue\", Int64.Type}, {\"MarginValue\", type number}})",
+                "in",
+                "    #\"Changed Type\""
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ]
+      }
+    ],
+    "relationships": [],
+    "annotations": [
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"Sales\"]"
+      },
+      {
+        "name": "__PBI_TimeIntelligenceEnabled",
+        "value": "0"
+      }
+    ]
+  }
+}

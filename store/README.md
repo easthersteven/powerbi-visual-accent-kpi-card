@@ -1,0 +1,27 @@
+# Store assets - Accent KPI Card
+
+| File | Used for |
+| --- | --- |
+| `listing.md` | Paste-ready Partner Center values for every page of the offer |
+| `icon-300x300.png` | Offer listing logo (exactly 300x300) |
+| `screenshot-1366x768.png` | Offer listing screenshot (exactly 1366x768, under 1024 kb) |
+| `accent-kpi-card-sample.pbip` | Power BI Project that produces the required sample report |
+
+## Producing the sample .pbix
+
+Partner Center requires a sample report that opens **offline**. The project here holds the
+whole report as text: an offline semantic model (data embedded with Power Query's
+"Enter data" pattern) and a two-page report - an Overview page showing the visual and a
+Tips page. Turn it into a .pbix once:
+
+1. Power BI Desktop > **File > Options and settings > Options > Preview features** and
+   tick **Store reports using enhanced metadata format (PBIR)**. Restart Desktop.
+2. Open `store/accent-kpi-card-sample.pbip`.
+3. **Insert > More visuals > Import a visual from a file** and pick
+   `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.0.0.0.pbiviz`. If the visual container is still
+   blank, close and reopen the project - Desktop registers the visual on load.
+4. **Ctrl+S** to save the project (this writes the visual into the report definition).
+5. **File > Save as** > `store/accent-kpi-card-sample.pbix`.
+
+Keep the .pbix in step with the visual version you upload: rebuild with
+`npm run package`, re-import the new .pbiviz, and save again.
