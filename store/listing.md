@@ -36,9 +36,30 @@ Ideal for KPI strips across the top of a dashboard where consistency, crisp text
 - Screenshot 1366x768 (PNG, under 1024 kb): `store/screenshot-1366x768.png`
   Suggested caption: "KPI cards with accent bars, direction aware deltas and a configurable value when data is empty."
 
-**Technical configuration:**
-- PBIVIZ package: `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.0.0.0.pbiviz`
-- Sample PBIX: required, must embed offline sample data and use this exact visual version.
+**Properties page:**
+- Category (max 2): KPI + Change over time
+- Industry (max 2): leave empty - the visual is not industry-specific
+- EULA: use the Standard Contract for Microsoft's commercial marketplace
+- Privacy policy link: https://github.com/easthersteven/powerbi-visual-accent-kpi-card/blob/main/PRIVACY.md
+- Support document link: https://github.com/easthersteven/powerbi-visual-accent-kpi-card/blob/main/SUPPORT.md
 
-**Certification (Offer setup page):** tick "Power BI certification" and in Notes for certification enter:
-Source: https://github.com/easthersteven/powerbi-visual-accent-kpi-card (branch: certification). Public repository, no credentials required. Build and test instructions in README.
+**Technical configuration page:**
+- PBIVIZ package: `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.0.0.0.pbiviz`
+  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-accent-kpi-card\dist\accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.0.0.0.pbiviz`)
+- Sample PBIX: `store/accent-kpi-card-sample.pbix` - must open offline with no external
+  connections, embed its own sample data, and use this exact visual version.
+
+**Certification:**
+1. Offer setup page: tick **Request Power BI certification**.
+2. Review and publish page, **Notes for certification** box, paste:
+
+   Source code: https://github.com/easthersteven/powerbi-visual-accent-kpi-card
+   Branch: certification (matches the submitted package exactly)
+   Access: public repository, no credentials required.
+   Build: npm install, then npm run package (powerbi-visuals-tools 7.2.1, API 5.11.0).
+   Verified: npm audit clean, eslint clean, `pbiviz package --certification-audit`
+   reports no external requests, capabilities declare `"privileges": []`.
+
+**Pre-publish checks (24 Aug 2026, v1.0.0.0):** npm audit 0 vulnerabilities; eslint
+clean; unit tests pass; certification audit found no external requests; logo 300x300 and
+screenshot 1366x768 within size limits; main and certification branches identical.
