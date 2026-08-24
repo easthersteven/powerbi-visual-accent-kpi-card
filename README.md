@@ -35,6 +35,7 @@ Set via the visual's objects (Format pane and report themes):
 | cardStyle | valueFormat | "currency", "percent", "decimal1", or empty for whole numbers. |
 | cardStyle | currencyCode | ISO 4217 code used by the currency format (default USD, e.g. AUD, GBP). |
 | cardStyle | compact | Abbreviate large numbers: 1284000 renders as 1.28M (or $1.28M). |
+| cardStyle | decimals | Decimal places (0-4) for the value and the delta. Unset keeps each format's default: 1 for percent and decimal1, 0 for currency and whole numbers, 2 for compact. |
 | cardStyle | deltaFormat | Overrides the badge format: "percentChange" shows 4.2% on a currency card; empty follows valueFormat. |
 | cardStyle | emptyDefault | Value shown when the main measure returns blank (default "0"). |
 | cardStyle | fontSize | Value font size; caption, subtitle, and delta scale from it. |

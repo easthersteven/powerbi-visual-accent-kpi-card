@@ -105,3 +105,24 @@ test("deltaDisplay formats a currency delta as currency", () => {
 test("deltaDisplay follows the value format when no delta format is set", () => {
     assert.equal(deltaDisplay(12, "down", "", "en-US").text, "▲ 12");
 });
+
+test("decimals setting tailors precision in every format", () => {
+    assert.equal(formatMainValue(0.96449, "percent", "en-US", { decimals: 0 }), "96%");
+    assert.equal(formatMainValue(0.96449, "percent", "en-US", { decimals: 2 }), "96.45%");
+    assert.equal(formatMainValue(1234.567, "", "en-US", { decimals: 2 }), "1,234.57");
+    assert.equal(formatMainValue(1234.5, "", "en-US", { decimals: 0 }), "1,235");
+    assert.equal(formatMainValue(1234.5, "currency", "en-US", { currencyCode: "USD", decimals: 2 }), "$1,234.50");
+    assert.equal(formatMainValue(3.14159, "decimal1", "en-US", { decimals: 3 }), "3.142");
+});
+
+test("decimals is clamped and ignored when unset or invalid", () => {
+    assert.equal(formatMainValue(1.23456789, "decimal1", "en-US", { decimals: 9 }), "1.2346");
+    assert.equal(formatMainValue(0.825, "percent", "en-US", {}), "82.5%");
+    assert.equal(formatMainValue(0.825, "percent", "en-US", { decimals: -1 }), "82.5%");
+    assert.equal(formatMainValue(1234.6, "", "en-US"), "1,235");
+});
+
+test("decimals applies to the delta badge too", () => {
+    assert.equal(deltaDisplay(0.011, "up", "percent", "en-US", { decimals: 2 }).text, "▲ 1.10pp");
+    assert.equal(deltaDisplay(0.042, "up", "currency", "en-US", { decimals: 0 }, "percentChange").text, "▲ 4%");
+});

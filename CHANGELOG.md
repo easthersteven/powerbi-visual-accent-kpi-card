@@ -11,6 +11,9 @@
   delta in percentage points ("pp"), which is what a change in a rate means.
 - An unrecognised currency code falls back to plain number formatting rather than showing
   the wrong symbol.
+- `decimals` (0-4) tailors precision in every format: 2-decimal currency, a whole-number
+  percentage, and so on. Unset keeps each format's existing default, so upgrading changes
+  nothing unless you ask it to.
 
 ## 1.0.0.0 (2026-08-13)
 

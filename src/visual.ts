@@ -76,6 +76,7 @@ export class Visual implements IVisual {
             const fmtOpts = {
                 currencyCode: (objects?.currencyCode as string) || "",
                 compact: (objects?.compact as boolean) || false,
+                decimals: objects?.decimals as number,
             };
             const fontSize = (objects?.fontSize as number) ?? 30;
             const goodColor = (objects?.goodColor as { solid?: { color?: string } })?.solid?.color || "#0F7A2C";

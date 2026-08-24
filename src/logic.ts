@@ -4,6 +4,15 @@
 export interface FormatOptions {
     currencyCode?: string;   // ISO 4217 code used by the "currency" format (default USD)
     compact?: boolean;       // abbreviate large numbers: 1284000 -> 1.28M
+    decimals?: number;       // 0-4 decimal places; unset keeps each format's own default
+}
+
+// Decimal places for a format, honouring an explicit setting when one is given.
+// Anything out of range (or unset) leaves the format's own default in place.
+export function decimalsOf(opts: FormatOptions | undefined, fallback: number): number {
+    const d = opts?.decimals;
+    if (typeof d !== "number" || !isFinite(d) || d < 0) return fallback;
+    return Math.min(4, Math.floor(d));
 }
 
 const DEFAULT_CURRENCY = "USD";
@@ -26,21 +35,23 @@ function currencyOf(opts?: FormatOptions): string {
 // Format the main value according to the card's value format setting.
 export function formatMainValue(mainVal: unknown, valueFormat: string, locale?: string, opts?: FormatOptions): string {
     if (typeof mainVal !== "number" || !isFinite(mainVal)) return mainVal != null ? String(mainVal) : "-";
-    if (valueFormat === "percent") return (mainVal * 100).toFixed(1) + "%";
-    if (valueFormat === "decimal1") return mainVal.toFixed(1);
+    if (valueFormat === "percent") return (mainVal * 100).toFixed(decimalsOf(opts, 1)) + "%";
+    if (valueFormat === "decimal1") return mainVal.toFixed(decimalsOf(opts, 1));
 
     const compact = !!opts?.compact;
     if (valueFormat === "currency") {
+        const dp = decimalsOf(opts, compact ? 2 : 0);
         const f = intl(locale, compact
-            ? { style: "currency", currency: currencyOf(opts), notation: "compact", maximumFractionDigits: 2 }
-            : { style: "currency", currency: currencyOf(opts), maximumFractionDigits: 0 });
+            ? { style: "currency", currency: currencyOf(opts), notation: "compact", maximumFractionDigits: dp }
+            : { style: "currency", currency: currencyOf(opts), minimumFractionDigits: dp, maximumFractionDigits: dp });
         if (f) return f.format(mainVal);
     }
     if (compact) {
-        const f = intl(locale, { notation: "compact", maximumFractionDigits: 2 });
+        const f = intl(locale, { notation: "compact", maximumFractionDigits: decimalsOf(opts, 2) });
         if (f) return f.format(mainVal);
     }
-    return mainVal.toLocaleString(locale, { maximumFractionDigits: 0 });
+    const dp = decimalsOf(opts, 0);
+    return mainVal.toLocaleString(locale, { minimumFractionDigits: dp, maximumFractionDigits: dp });
 }
 
 // Resolve the text to show when the main measure returns blank. A numeric setting
@@ -85,16 +96,17 @@ export function deltaDisplay(
     let formatted: string;
     if (fmt === "percent") {
         // A change in a rate is measured in percentage points, not percent.
-        formatted = (absVal * 100).toFixed(1) + "pp";
+        formatted = (absVal * 100).toFixed(decimalsOf(opts, 1)) + "pp";
     } else if (fmt === "percentChange") {
         // A proportional change in an absolute quantity, e.g. revenue up 4.2%.
-        formatted = (absVal * 100).toFixed(1) + "%";
+        formatted = (absVal * 100).toFixed(decimalsOf(opts, 1)) + "%";
     } else if (fmt === "currency") {
         formatted = formatMainValue(absVal, "currency", locale, opts);
     } else if (opts?.compact) {
         formatted = formatMainValue(absVal, "", locale, opts);
     } else {
-        formatted = absVal.toLocaleString(locale, { maximumFractionDigits: 1 });
+        const dp = decimalsOf(opts, 1);
+        formatted = absVal.toLocaleString(locale, { maximumFractionDigits: dp });
     }
     return { kind, text: arrow + " " + formatted };
 }
