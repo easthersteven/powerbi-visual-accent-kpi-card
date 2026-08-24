@@ -10,7 +10,7 @@
     "sourceQueryCulture": "en-GB",
     "tables": [
       {
-        "name": "No rows yet",
+        "name": "Sales",
         "columns": [
           {
             "name": "Month",
@@ -120,7 +120,7 @@
         ],
         "partitions": [
           {
-            "name": "No rows yet",
+            "name": "Sales",
             "mode": "import",
             "source": {
               "type": "m",
@@ -146,7 +146,7 @@
     "annotations": [
       {
         "name": "PBI_QueryOrder",
-        "value": "[\"No rows yet\"]"
+        "value": "[\"Sales\"]"
       },
       {
         "name": "__PBI_TimeIntelligenceEnabled",
