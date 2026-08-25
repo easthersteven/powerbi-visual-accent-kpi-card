@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { formatMainValue, deltaDisplay, resolveEmptyDefault } from "../.tmp/test-build/logic.js";
+import { formatMainValue, deltaDisplay, resolveEmptyDefault, tooltipItems } from "../.tmp/test-build/logic.js";
 
 test("formatMainValue formats percent values", () => {
     assert.equal(formatMainValue(0.825, "percent"), "82.5%");
@@ -125,4 +125,25 @@ test("decimals is clamped and ignored when unset or invalid", () => {
 test("decimals applies to the delta badge too", () => {
     assert.equal(deltaDisplay(0.011, "up", "percent", "en-US", { decimals: 2 }).text, "▲ 1.10pp");
     assert.equal(deltaDisplay(0.042, "up", "currency", "en-US", { decimals: 0 }, "percentChange").text, "▲ 4%");
+});
+
+test("tooltipItems always reports the value, named after the measure", () => {
+    const items = tooltipItems({ valueName: "Revenue", formattedValue: "$1.28M" });
+    assert.deepEqual(items, [{ displayName: "Revenue", value: "$1.28M" }]);
+});
+
+test("tooltipItems falls back to the caption, then to a generic name", () => {
+    assert.equal(tooltipItems({ caption: "Revenue", formattedValue: "1" })[0].displayName, "Revenue");
+    assert.equal(tooltipItems({ formattedValue: "1" })[0].displayName, "Value");
+});
+
+test("tooltipItems includes subtitle and delta only when present", () => {
+    const full = tooltipItems({
+        valueName: "Revenue", formattedValue: "$1.28M", subtitle: "YTD",
+        deltaText: "▲ 4.2%", deltaName: "Revenue change",
+    });
+    assert.deepEqual(full.map((i) => i.displayName), ["Revenue", "Subtitle", "Revenue change"]);
+    assert.equal(full[2].value, "▲ 4.2%");
+    const bare = tooltipItems({ formattedValue: "0", subtitle: "  ", deltaText: "" });
+    assert.equal(bare.length, 1);
 });

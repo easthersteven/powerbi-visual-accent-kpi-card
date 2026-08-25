@@ -110,3 +110,26 @@ export function deltaDisplay(
     }
     return { kind, text: arrow + " " + formatted };
 }
+
+export interface TooltipItem { displayName: string; value: string; }
+export interface TooltipInput {
+    caption?: string;          // the card's caption, used as the tooltip title
+    valueName?: string;        // display name of the bound measure
+    formattedValue: string;    // the value exactly as the card renders it
+    subtitle?: string;
+    deltaText?: string;        // the delta badge text, arrow included
+    deltaName?: string;        // display name of the bound delta measure
+}
+
+// Build the tooltip rows for the card. Only rows with content are shown, so a card bound to
+// a value alone gets a one-row tooltip rather than a list of blanks.
+export function tooltipItems(input: TooltipInput): TooltipItem[] {
+    const items: TooltipItem[] = [];
+    const name = (input.valueName ?? "").trim() || (input.caption ?? "").trim() || "Value";
+    items.push({ displayName: name, value: input.formattedValue });
+    const sub = (input.subtitle ?? "").trim();
+    if (sub) items.push({ displayName: "Subtitle", value: sub });
+    const delta = (input.deltaText ?? "").trim();
+    if (delta) items.push({ displayName: (input.deltaName ?? "").trim() || "Change", value: delta });
+    return items;
+}

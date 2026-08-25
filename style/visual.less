@@ -1,9 +1,13 @@
 .accent-kpi-card {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    box-sizing: border-box;
     height: 100%;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    // Scroll rather than clip when the host shrinks the visual below its content, so every
+    // element stays reachable at any size (Power BI certification policy 1180.2.2).
+    overflow: auto;
+    cursor: pointer;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: geometricPrecision;
@@ -16,12 +20,13 @@
     }
 
     .kpi-body {
-        flex: 1;
+        // grow into spare space, but never compress below the content: the root scrolls instead
+        flex: 1 0 auto;
+        min-height: min-content;
         padding: 7px 14px 6px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        min-height: 0;
     }
 
     .kpi-value-row {
@@ -82,12 +87,35 @@
     }
 
     .kpi-header {
-        height: 100%;
+        min-height: 100%;
         display: flex;
         align-items: center;
         font-weight: 700;
         line-height: 1.15;
         padding: 0 2px;
         white-space: normal;
+    }
+
+    // a selected card is outlined, so cross-filtering is visible on the card itself
+    &.selected {
+        outline: 2px solid #1F908C;
+        outline-offset: -2px;
+    }
+}
+
+.accent-kpi-card .kpi-landing {
+    padding: 12px 14px;
+    color: #605E5C;
+
+    .kpi-landing-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #023864;
+        margin-bottom: 4px;
+    }
+
+    .kpi-landing-body {
+        font-size: 11px;
+        line-height: 1.4;
     }
 }

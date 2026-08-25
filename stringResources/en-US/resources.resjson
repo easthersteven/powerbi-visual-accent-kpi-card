@@ -1,0 +1,10 @@
+{
+    "mainValue": "Value",
+    "deltaValue": "Delta",
+    "subtitle": "Subtitle",
+    "Landing_Title": "Accent KPI Card",
+    "Landing_Body": "Add a measure to the Value field to get started. Bind Delta for a direction aware badge, and Subtitle for text beside the value.",
+    "Tooltip_Value": "Value",
+    "Tooltip_Subtitle": "Subtitle",
+    "Tooltip_Change": "Change"
+}

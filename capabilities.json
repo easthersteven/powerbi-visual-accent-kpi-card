@@ -96,5 +96,12 @@
             }
         }
     ],
+    "tooltips": {
+        "supportedTypes": { "default": true, "canvas": true }
+    },
+    "supportsKeyboardFocus": true,
+    "supportsMultiVisualSelection": true,
+    "supportsHighlight": true,
+    "supportsLandingPage": true,
     "privileges": []
 }
