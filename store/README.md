@@ -18,7 +18,7 @@ Tips page. Turn it into a .pbix once:
    tick **Store reports using enhanced metadata format (PBIR)**. Restart Desktop.
 2. Open `store/accent-kpi-card-sample.pbip`.
 3. **Insert > More visuals > Import a visual from a file** and pick
-   `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.0.0.0.pbiviz`. If the visual container is still
+   `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.2.0.0.pbiviz`. If the visual container is still
    blank, close and reopen the project - Desktop registers the visual on load.
 4. **Ctrl+S** to save the project (this writes the visual into the report definition).
 5. **File > Save as** > `store/accent-kpi-card-sample.pbix`.

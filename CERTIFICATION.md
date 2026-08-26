@@ -33,13 +33,21 @@ The visual does not filter outwards to other visuals. Not blocking, and arguably
 for a single-value card: there is no data point to select. If implemented, clicking the
 card would select its measure's row and cross-filter the page via `ISelectionManager`.
 
+### 1180.2.3 Sample File - not raised, but pre-empted
+
+Pill Toggle Slicer failed this policy on 26 August 2026 because its `.pbiviz` and `.pbix`
+slots held different versions. The same mismatch existed here: the sample embedded 1.1.0.0
+while the package to submit is 1.2.0.0. `store/accent-kpi-card-sample.pbix` now embeds
+1.2.0.0, byte-identical to
+`dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.2.0.0.pbiviz`.
+
 ## Resubmission checklist
 
 1. Fix the overflow behaviour (blocking).
 2. Optionally add tooltips and outward filtering to clear the soft failures.
 3. Bump the version in `pbiviz.json` and `package.json`.
 4. `npm test`, `npm run eslint`, `npx pbiviz package --certification-audit`.
-5. Re-save `store/accent-kpi-card-sample.pbix` from the PBIP with the new package.
+5. Confirm `store/accent-kpi-card-sample.pbix` embeds the submitted version (1180.2.3).
 6. Upload the new `.pbiviz` and `.pbix` on Technical configuration, then resubmit.
 
 ## Full policy audit (26 August 2026)
@@ -68,6 +76,7 @@ in "Testing submissions of Power BI custom visuals".
 | Landing page when nothing is bound | **Fixed** - explains what to bind |
 | Localization | **Fixed** - `stringResources` and the host localization manager |
 | Bookmarks | Pass |
+| Sample .pbix embeds the submitted visual version (1180.2.3) | **Fixed** - sample embeds 1.2.0.0, byte-identical to `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.2.0.0.pbiviz` |
 | No external services; `privileges: []` | Pass - certification audit reports no external requests |
 
 `pbiviz package --certification-audit` reports **no recommended-feature warnings**. The
@@ -81,9 +90,12 @@ Icon); several of those would require privileges that certification forbids.
 `dist/` - upload that file on the Partner Center Technical configuration page, and paste the
 notes from `store/listing.md` into Notes for certification on Review and publish.
 
-**Outstanding before upload:** `store/` still holds a sample .pbix that embeds 1.1.0.0. Power BI
-requires the sample report to use the submitted visual version, so re-save it from the .pbip
-project with the 1.2.0.0 package first - see `store/README.md` for the steps.
+**Outstanding before upload:** none in the repo. `store/accent-kpi-card-sample.pbix`
+embeds 1.2.0.0, matching the package in `dist/`. Upload both slots together - uploading
+one alone is what produced the 1180.2.3 failure on Pill Toggle Slicer. The sample was
+updated by replacing the embedded visual payload in place rather than by a Save As from
+Desktop, so open it once in Power BI Desktop to confirm the visual renders before
+uploading.
 
 **Verified at this version:** npm audit 0 vulnerabilities; ESLint clean; 46 tests passing at
 98% statement coverage; `pbiviz package --certification-audit` reports no external requests
