@@ -52,14 +52,59 @@ Ideal for KPI strips across the top of a dashboard where consistency, crisp text
 
 **Certification:**
 1. Offer setup page: tick **Request Power BI certification**.
-2. Review and publish page, **Notes for certification** box, paste:
+2. Review and publish page, **Notes for certification** box, paste everything
+   between the rules below (reviewer-facing only - nothing in it is a note to self):
 
-   Source code: https://github.com/easthersteven/powerbi-visual-accent-kpi-card
-   Branch: certification (matches the submitted package exactly)
+   ---
+   Accent KPI Card 1.3.0.0 - Product ID e569891a-3a03-4a79-b794-2f5d6670819a
+   Supersedes 1.1.0.0, reviewed 25 August 2026.
+
+   SOURCE AND BUILD
+   Repository: https://github.com/easthersteven/powerbi-visual-accent-kpi-card
+   Branch: certification - byte-identical to main and to the submitted package.
    Access: public repository, no credentials required.
-   Build: npm install, then npm run package (powerbi-visuals-tools 7.2.1, API 5.11.0).
-   Verified: npm audit clean, eslint clean, `pbiviz package --certification-audit`
-   reports no external requests, capabilities declare `"privileges": []`.
+   Build: npm install, then npm run package.
+   Tooling: powerbi-visuals-tools 7.2.1, API 5.11.0.
+
+   RESPONSE TO THE REVIEW OF 25 AUGUST 2026
+   1180.2.2 resize (blocking) - fixed. The root container is overflow:auto and the body
+   no longer compresses below its content, so scroll bars appear instead of the caption,
+   value and delta being clipped. Reproducible at roughly 150x80 px.
+   1180.2.2.2 tool tips - fixed. Hovering the card shows the value, subtitle and delta
+   through the host tooltip service, each row named after the measure bound to it.
+   1180.2.2.3 filter out - fixed. Clicking the card selects its measure and cross-filters
+   the page; clicking again clears it and Ctrl+click adds to a selection. The selected
+   card is outlined, and selection made elsewhere is reflected back through
+   registerOnSelectCallback.
+
+   ALSO IN THIS VERSION
+   Every property declared in capabilities.json is now returned from getFormattingModel,
+   so the whole configuration surface is reachable in the Format pane. Adds a font family
+   picker and an independent font size and colour for the value, caption, subtitle and
+   delta badge.
+
+   HOST BEHAVIOUR AND ACCESSIBILITY
+   High contrast mode takes every colour from the host palette. The card is focusable and
+   Enter or Space activates it; supportsKeyboardFocus is declared. Honours the report's
+   Edit interactions setting. Shows the highlighted figure when another visual highlights
+   a subset (supportsHighlight). Supports the Rendering Events API and context menus.
+   Strings are localised through stringResources and the host localization manager, and a
+   landing page explains the visual when nothing is bound.
+
+   SECURITY AND PRIVACY
+   No external services and no network calls of any kind; no data leaves the report.
+   capabilities.json declares "privileges": []. pbiviz package --certification-audit
+   reports no external requests. npm audit reports 0 vulnerabilities. 48 unit tests pass.
+
+   SAMPLE FILE
+   accent-kpi-card-sample.pbix opens offline: the model is import-mode with inline sample
+   data, with no data sources, connectors or credentials. It embeds visual version
+   1.3.0.0, matching the submitted .pbiviz. Page 1 shows four cards, left to right: a
+   currency value in compact notation (AUD) with a percentage-change delta, a
+   down-is-good metric (open tickets), a percentage whose delta reads in percentage
+   points, and a card whose measure returns BLANK() to demonstrate the configurable empty
+   value. Page 2 documents the settings.
+   ---
 
 **Pre-publish checks (27 Aug 2026, v1.3.0.0):** npm audit 0 vulnerabilities; eslint
 clean; unit tests pass; certification audit found no external requests; logo 300x300 and
