@@ -133,3 +133,122 @@ export function tooltipItems(input: TooltipInput): TooltipItem[] {
     if (delta) items.push({ displayName: (input.deltaName ?? "").trim() || "Change", value: delta });
     return items;
 }
+
+// ---------------------------------------------------------------------------
+// Format pane settings
+// ---------------------------------------------------------------------------
+
+// Every property the Format pane can set, resolved to a concrete value. The visual reads
+// this once per update and hands the same object to getFormattingModel, so the pane always
+// shows what the card is actually rendering.
+export interface CardSettings {
+    fontFamily: string;
+    fontSize: number;
+    valueColor: string;
+    caption: string;
+    captionSize: number;
+    captionColor: string;
+    subtitleSize: number;
+    subtitleColor: string;
+    deltaSize: number;
+    accentColor: string;
+    direction: string;
+    valueFormat: string;
+    deltaFormat: string;
+    currencyCode: string;
+    compact: boolean;
+    decimals: number | undefined;
+    emptyDefault: string;
+    goodColor: string;
+    badColor: string;
+    neutralColor: string;
+    headerMode: boolean;
+    headerColor: string;
+    headerSize: number;
+    headerBg: string;
+}
+
+export const CARD_DEFAULTS: Readonly<CardSettings> = Object.freeze({
+    fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
+    fontSize: 30,
+    valueColor: "#023864",
+    caption: "",
+    captionSize: 11,
+    captionColor: "#023864",
+    subtitleSize: 16,
+    subtitleColor: "#605E5C",
+    deltaSize: 11,
+    accentColor: "#1F908C",
+    direction: "neutral",
+    valueFormat: "number",
+    deltaFormat: "auto",
+    currencyCode: "",
+    compact: false,
+    decimals: undefined,
+    emptyDefault: "0",
+    goodColor: "#0F7A2C",
+    badColor: "#9E2F24",
+    neutralColor: "#605E5C",
+    headerMode: false,
+    headerColor: "#023864",
+    headerSize: 14,
+    headerBg: "transparent",
+});
+
+type Raw = Record<string, unknown> | undefined;
+
+function colorOf(raw: Raw, key: string, fallback: string): string {
+    const c = (raw?.[key] as { solid?: { color?: string } })?.solid?.color;
+    return typeof c === "string" && c !== "" ? c : fallback;
+}
+
+// Sizes come back from the pane as numbers but a hand-edited theme file can supply anything.
+// Out-of-range values fall back to the default rather than rendering an unreadable card.
+function sizeOf(raw: Raw, key: string, fallback: number): number {
+    const n = raw?.[key];
+    if (typeof n !== "number" || !isFinite(n) || n < 4 || n > 200) return fallback;
+    return n;
+}
+
+function textOf(raw: Raw, key: string, fallback: string): string {
+    const t = raw?.[key];
+    return typeof t === "string" && t !== "" ? t : fallback;
+}
+
+// Read the cardStyle object off the dataView metadata. Power BI hands the object back as
+// either a bare object or a single-element array depending on the host, so both are accepted.
+export function readSettings(rawObjects: unknown): CardSettings {
+    const raw = (Array.isArray(rawObjects) ? rawObjects[0] : rawObjects) as Raw;
+    const d = CARD_DEFAULTS;
+    return {
+        fontFamily: textOf(raw, "fontFamily", d.fontFamily),
+        fontSize: sizeOf(raw, "fontSize", d.fontSize),
+        valueColor: colorOf(raw, "valueColor", d.valueColor),
+        caption: typeof raw?.["caption"] === "string" ? (raw["caption"] as string) : d.caption,
+        captionSize: sizeOf(raw, "captionSize", d.captionSize),
+        captionColor: colorOf(raw, "captionColor", d.captionColor),
+        subtitleSize: sizeOf(raw, "subtitleSize", d.subtitleSize),
+        subtitleColor: colorOf(raw, "subtitleColor", d.subtitleColor),
+        deltaSize: sizeOf(raw, "deltaSize", d.deltaSize),
+        accentColor: colorOf(raw, "accentColor", d.accentColor),
+        direction: textOf(raw, "direction", d.direction),
+        valueFormat: textOf(raw, "valueFormat", d.valueFormat),
+        deltaFormat: textOf(raw, "deltaFormat", d.deltaFormat),
+        currencyCode: typeof raw?.["currencyCode"] === "string" ? (raw["currencyCode"] as string) : d.currencyCode,
+        compact: raw?.["compact"] === true,
+        decimals: typeof raw?.["decimals"] === "number" ? (raw["decimals"] as number) : d.decimals,
+        emptyDefault: typeof raw?.["emptyDefault"] === "string" ? (raw["emptyDefault"] as string) : d.emptyDefault,
+        goodColor: colorOf(raw, "goodColor", d.goodColor),
+        badColor: colorOf(raw, "badColor", d.badColor),
+        neutralColor: colorOf(raw, "neutralColor", d.neutralColor),
+        headerMode: raw?.["headerMode"] === true,
+        headerColor: colorOf(raw, "headerColor", d.headerColor),
+        headerSize: sizeOf(raw, "headerSize", d.headerSize),
+        headerBg: colorOf(raw, "headerBg", d.headerBg),
+    };
+}
+
+// "auto" means the delta badge follows the value format; logic below keys off an empty string.
+export function effectiveDeltaFormat(deltaFormat: string): string {
+    return deltaFormat === "auto" ? "" : deltaFormat;
+}

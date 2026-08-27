@@ -37,9 +37,9 @@ card would select its measure's row and cross-filter the page via `ISelectionMan
 
 Pill Toggle Slicer failed this policy on 26 August 2026 because its `.pbiviz` and `.pbix`
 slots held different versions. The same mismatch existed here: the sample embedded 1.1.0.0
-while the package to submit is 1.2.0.0. `store/accent-kpi-card-sample.pbix` now embeds
-1.2.0.0, byte-identical to
-`dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.2.0.0.pbiviz`.
+while the package to submit is 1.3.0.0. `store/accent-kpi-card-sample.pbix` now embeds
+1.3.0.0, byte-identical to
+`dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.3.0.0.pbiviz`.
 
 ## Resubmission checklist
 
@@ -67,7 +67,7 @@ in "Testing submissions of Power BI custom visuals".
 | Ctrl / Alt / Shift selection | Pass - Ctrl and Cmd add to the selection |
 | min/max dataViewMapping conditions | **Fixed** - conditions declared |
 | Remove fields in arbitrary order; no console errors | Pass - guarded reads, landing page when empty |
-| Format pane: every bucket configuration, bad input | Pass - defaults on every property, out-of-range clamped |
+| Format pane: every bucket configuration, bad input | **Fixed** - every declared property is reachable in the pane (see below); defaults on every property, out-of-range values clamped |
 | Bad data: null, infinity, negative, wrong types | Pass - covered by unit tests |
 | Data volumes: one row, two rows, thousands | Pass - data reduction declared |
 | Number formats and precision changes | Pass - model format strings honoured |
@@ -76,7 +76,7 @@ in "Testing submissions of Power BI custom visuals".
 | Landing page when nothing is bound | **Fixed** - explains what to bind |
 | Localization | **Fixed** - `stringResources` and the host localization manager |
 | Bookmarks | Pass |
-| Sample .pbix embeds the submitted visual version (1180.2.3) | **Fixed** - sample embeds 1.2.0.0, byte-identical to `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.2.0.0.pbiviz` |
+| Sample .pbix embeds the submitted visual version (1180.2.3) | **Fixed** - sample embeds 1.3.0.0, byte-identical to `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.3.0.0.pbiviz` |
 | No external services; `privileges: []` | Pass - certification audit reports no external requests |
 
 `pbiviz package --certification-audit` reports **no recommended-feature warnings**. The
@@ -84,19 +84,37 @@ features it still lists are informational extras (Analytics Pane, Conditional Fo
 Drill Down, Fetch More Data, File Download, Launch URL, Local Storage, Modal Dialog, Warning
 Icon); several of those would require privileges that certification forbids.
 
-## Current state (26 August 2026)
+## Format pane coverage (27 August 2026)
 
-**Ready to submit:** 1.2.0.0. Package built and audited at
+At API 5.x the Format pane is built solely from `getFormattingModel`. A property declared in
+`capabilities.json` but not returned there is unreachable to the report author - it can only
+be set by hand-editing a theme file - which fails the reviewer's "Format pane: every bucket
+configuration" test and makes any listing claim about it false.
+
+**11 properties were unreachable at 1.3.0.0:** `caption`, `valueFormat`, `currencyCode`, `compact`, `decimals`, `deltaFormat`, `direction`, `headerMode`, `headerColor`, `headerSize` and `headerBg`. All are now in the pane.
+
+**Newly added because nothing existed behind them:** a font family picker, independent colours for the value, caption and subtitle, and independent font sizes for the caption, subtitle and delta badge - each was previously
+hardcoded in `style/visual.less`.
+
+All 24 declared properties are now returned from `getFormattingModel`, and a unit test
+asserts that, so it cannot regress silently.
+
+## Current state (27 August 2026)
+
+**Ready to submit:** 1.3.0.0. Package built and audited at
 `dist/` - upload that file on the Partner Center Technical configuration page, and paste the
 notes from `store/listing.md` into Notes for certification on Review and publish.
 
-**Outstanding before upload:** none in the repo. `store/accent-kpi-card-sample.pbix`
-embeds 1.2.0.0, matching the package in `dist/`. Upload both slots together - uploading
-one alone is what produced the 1180.2.3 failure on Pill Toggle Slicer. The sample was
-updated by replacing the embedded visual payload in place rather than by a Save As from
-Desktop, so open it once in Power BI Desktop to confirm the visual renders before
-uploading.
+**Outstanding before upload:** the sample .pbix is one version behind.
+`store/accent-kpi-card-sample.pbix` was re-saved from Power BI Desktop on 27 August 2026 and
+embeds **1.2.0.0**, but this build is 1.3.0.0. Desktop still had the file open when 1.3.0.0
+was packaged, so it could not be updated in place. Re-import
+`dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.3.0.0.pbiviz` and save again - a real
+Desktop save is preferable to a payload swap in any case.
 
-**Verified at this version:** npm audit 0 vulnerabilities; ESLint clean; 46 tests passing at
+Then upload both slots together: uploading one alone is what produced the 1180.2.3 failure on
+Pill Toggle Slicer.
+
+**Verified at this version:** npm audit 0 vulnerabilities; ESLint clean; 48 tests passing at
 98% statement coverage; `pbiviz package --certification-audit` reports no external requests
 and no recommended-feature warnings.

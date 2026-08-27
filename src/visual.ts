@@ -2,7 +2,7 @@
 
 import powerbi from "powerbi-visuals-api";
 import "./../style/visual.less";
-import { formatMainValue, deltaDisplay, resolveEmptyDefault, tooltipItems } from "./logic";
+import { formatMainValue, deltaDisplay, resolveEmptyDefault, tooltipItems, readSettings, effectiveDeltaFormat, CARD_DEFAULTS, CardSettings } from "./logic";
 
 import VisualConstructorOptions = powerbi.extensibility.visual.VisualConstructorOptions;
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
@@ -34,12 +34,9 @@ export class Visual implements IVisual {
     private selected = false;
     private target: HTMLElement;
     private locale: string | undefined;
-    private lastFontSize = 30;
-    private lastGood = "#0F7A2C";
-    private lastBad = "#9E2F24";
-    private lastNeutral = "#605E5C";
-    private lastAccent = "#1F908C";
-    private lastEmptyDefault = "0";
+    // Mirrors the last rendered settings so getFormattingModel shows what the card is
+    // actually displaying, including the defaults applied when a property is unset.
+    private settings: CardSettings = { ...CARD_DEFAULTS };
 
     constructor(options: VisualConstructorOptions) {
         this.events = options.host.eventService;
@@ -153,49 +150,33 @@ export class Visual implements IVisual {
                 if (role?.["subtitle"]) subtitleVal = col.values[0];
             }
 
-            const rawObj = dv.metadata?.objects?.["cardStyle"] as unknown;
-            const objects = (Array.isArray(rawObj) ? rawObj[0] : rawObj) as Record<string, unknown>;
-            const accentColor = (objects?.accentColor as { solid?: { color?: string } })?.solid?.color || "#1F908C";
-            const direction = (objects?.direction as string) || "neutral";
-            const caption = (objects?.caption as string) || "";
-            const valueFormat = (objects?.valueFormat as string) || "";
-            const deltaFormat = (objects?.deltaFormat as string) || "";
-            const fmtOpts = {
-                currencyCode: (objects?.currencyCode as string) || "",
-                compact: (objects?.compact as boolean) || false,
-                decimals: objects?.decimals as number,
-            };
-            const fontSize = (objects?.fontSize as number) ?? 30;
-            const goodColor = (objects?.goodColor as { solid?: { color?: string } })?.solid?.color || "#0F7A2C";
-            const badColor = (objects?.badColor as { solid?: { color?: string } })?.solid?.color || "#9E2F24";
-            const neutralColor = (objects?.neutralColor as { solid?: { color?: string } })?.solid?.color || "#605E5C";
-            const emptyDefault = (objects?.emptyDefault as string) ?? "0";
+            const s = readSettings(dv.metadata?.objects?.["cardStyle"]);
+            this.settings = s;
+            const fmtOpts = { currencyCode: s.currencyCode, compact: s.compact, decimals: s.decimals };
 
             // High contrast mode: the host palette replaces the configured colours, so the
             // card stays legible under the user's accessibility theme.
             const hc = this.colorPalette?.isHighContrast === true;
             const hcFore = this.colorPalette?.foreground?.value;
             const hcBack = this.colorPalette?.background?.value;
-            const accentColorEff = hc ? hcFore : accentColor;
-            const goodColorEff = hc ? hcFore : goodColor;
-            const badColorEff = hc ? hcFore : badColor;
-            const neutralColorEff = hc ? hcFore : neutralColor;
+            const accentColorEff = hc ? hcFore : s.accentColor;
+            const goodColorEff = hc ? hcFore : s.goodColor;
+            const badColorEff = hc ? hcFore : s.badColor;
+            const neutralColorEff = hc ? hcFore : s.neutralColor;
             this.target.style.background = hc ? hcBack : "";
             this.target.style.color = hc ? hcFore : "";
-            this.lastFontSize = fontSize; this.lastGood = goodColor; this.lastBad = badColor; this.lastNeutral = neutralColor; this.lastAccent = accentColor;
-            this.lastEmptyDefault = emptyDefault;
+            // Font family applies to the whole card, so every element inherits one typeface.
+            this.target.style.fontFamily = s.fontFamily;
 
             // HEADER MODE: render the caption as a crisp DOM header (sharper than native visual titles
             // under page scaling on high-DPI displays). Skips the accent/value/delta entirely.
-            const headerMode = (objects?.headerMode as boolean) || false;
-            if (headerMode) {
-                const hColor = hc ? hcFore : ((objects?.headerColor as { solid?: { color?: string } })?.solid?.color || "#023864");
-                const hBg = hc ? hcBack : ((objects?.headerBg as { solid?: { color?: string } })?.solid?.color || "transparent");
-                const hSize = (objects?.headerSize as number) ?? 14;
+            if (s.headerMode) {
+                const hColor = hc ? hcFore : s.headerColor;
+                const hBg = hc ? hcBack : s.headerBg;
                 this.target.style.background = hBg;
-                const h = el("div", "kpi-header", caption);
+                const h = el("div", "kpi-header", s.caption);
                 h.style.color = hColor;
-                h.style.fontSize = hSize + "px";
+                h.style.fontSize = s.headerSize + "px";
                 this.target.appendChild(h);
                 this.events.renderingFinished(options);
                 return;
@@ -206,8 +187,8 @@ export class Visual implements IVisual {
             // like a real value, so "0" renders as "0.0%" in percent mode).
             const hasMain = [...vals].some((col) => col.source.roles?.["mainValue"]);
             const formattedValue = mainVal == null && hasMain
-                ? resolveEmptyDefault(emptyDefault, valueFormat, this.locale, fmtOpts)
-                : formatMainValue(mainVal, valueFormat, this.locale, fmtOpts);
+                ? resolveEmptyDefault(s.emptyDefault, s.valueFormat, this.locale, fmtOpts)
+                : formatMainValue(mainVal, s.valueFormat, this.locale, fmtOpts);
 
             // Identify the bound measure so the card can cross-filter the page and so the
             // tooltip carries an identity the host can use.
@@ -225,21 +206,22 @@ export class Visual implements IVisual {
 
             const body = el("div", "kpi-body");
 
-            if (caption) {
-                const capEl = el("div", "kpi-caption", caption);
-                if (hc) capEl.style.color = hcFore;
-                capEl.style.fontSize = (fontSize * 0.37) + "px";
+            if (s.caption) {
+                const capEl = el("div", "kpi-caption", s.caption);
+                capEl.style.color = hc ? hcFore : s.captionColor;
+                capEl.style.fontSize = s.captionSize + "px";
                 body.appendChild(capEl);
             }
 
             const valueRow = el("div", "kpi-value-row");
             const valEl = el("span", "kpi-value", formattedValue);
-            if (hc) valEl.style.color = hcFore;
-            valEl.style.fontSize = fontSize + "px";
+            valEl.style.color = hc ? hcFore : s.valueColor;
+            valEl.style.fontSize = s.fontSize + "px";
             valueRow.appendChild(valEl);
             if (subtitleVal != null && subtitleVal !== "") {
                 const subEl = el("span", "subtitle-value", String(subtitleVal));
-                subEl.style.fontSize = (fontSize * 0.53) + "px";
+                subEl.style.color = hc ? hcFore : s.subtitleColor;
+                subEl.style.fontSize = s.subtitleSize + "px";
                 valueRow.appendChild(subEl);
             }
             body.appendChild(valueRow);
@@ -247,19 +229,19 @@ export class Visual implements IVisual {
             if (deltaVal != null) {
                 const d = typeof deltaVal === "number" ? deltaVal : parseFloat(String(deltaVal));
                 if (!isNaN(d)) {
-                    const delta = deltaDisplay(d, direction, valueFormat, this.locale, fmtOpts, deltaFormat);
+                    const delta = deltaDisplay(d, s.direction, s.valueFormat, this.locale, fmtOpts, effectiveDeltaFormat(s.deltaFormat));
                     deltaText = delta.text;
                     const deltaEl = el("span", "delta delta-" + delta.kind, delta.text);
                     deltaEl.style.color = delta.kind === "good" ? goodColorEff : delta.kind === "bad" ? badColorEff : neutralColorEff;
                     if (hc) { deltaEl.style.background = hcBack; deltaEl.style.border = "1px solid " + hcFore; }
-                    deltaEl.style.fontSize = (fontSize * 0.37) + "px";
+                    deltaEl.style.fontSize = s.deltaSize + "px";
                     body.appendChild(deltaEl);
                 } else if (typeof deltaVal === "string" && deltaVal.length > 0) {
                     deltaText = String(deltaVal);
                     const dEl = el("span", "delta delta-neutral", String(deltaVal));
                     dEl.style.color = neutralColorEff;
                     if (hc) { dEl.style.background = hcBack; dEl.style.border = "1px solid " + hcFore; }
-                    dEl.style.fontSize = (fontSize * 0.37) + "px";
+                    dEl.style.fontSize = s.deltaSize + "px";
                     body.appendChild(dEl);
                 }
             }
@@ -269,7 +251,7 @@ export class Visual implements IVisual {
             // Tooltip on hover: what the card shows, plus the names of the bound measures
             // (certification policy 1180.2.2.2).
             const items = tooltipItems({
-                caption,
+                caption: s.caption,
                 valueName: mainCol?.source?.displayName,
                 formattedValue,
                 subtitle: subtitleVal != null ? String(subtitleVal) : "",
@@ -292,57 +274,188 @@ export class Visual implements IVisual {
         }
     }
 
+    // --- Format pane -------------------------------------------------------
+    // Every property declared in capabilities.json is surfaced here. At API 5.x the pane is
+    // built solely from this model, so anything omitted is unreachable to the report author.
+
+    private static desc(propertyName: string): powerbi.visuals.FormattingDescriptor {
+        return { objectName: "cardStyle", propertyName };
+    }
+
+    private colorSlice(uid: string, displayName: string, prop: string, value: string): powerbi.visuals.FormattingSlice {
+        return {
+            uid, displayName,
+            control: {
+                type: powerbi.visuals.FormattingComponent.ColorPicker,
+                properties: { descriptor: Visual.desc(prop), value: { value } }
+            }
+        };
+    }
+
+    private numSlice(uid: string, displayName: string, prop: string, value: number, min: number, max: number, unit?: string): powerbi.visuals.FormattingSlice {
+        return {
+            uid, displayName,
+            control: {
+                type: powerbi.visuals.FormattingComponent.NumUpDown,
+                properties: {
+                    descriptor: Visual.desc(prop),
+                    value,
+                    options: {
+                        unitSymbol: unit,
+                        minValue: { type: powerbi.visuals.ValidatorType.Min, value: min },
+                        maxValue: { type: powerbi.visuals.ValidatorType.Max, value: max }
+                    }
+                }
+            }
+        };
+    }
+
+    private toggleSlice(uid: string, displayName: string, prop: string, value: boolean): powerbi.visuals.FormattingSlice {
+        return {
+            uid, displayName,
+            control: {
+                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                properties: { descriptor: Visual.desc(prop), value }
+            }
+        };
+    }
+
+    private textSlice(uid: string, displayName: string, prop: string, value: string, placeholder: string): powerbi.visuals.FormattingSlice {
+        return {
+            uid, displayName,
+            control: {
+                type: powerbi.visuals.FormattingComponent.TextInput,
+                properties: { descriptor: Visual.desc(prop), value, placeholder }
+            }
+        };
+    }
+
+    private dropdownSlice(uid: string, displayName: string, prop: string, value: string, items: powerbi.IEnumMember[]): powerbi.visuals.FormattingSlice {
+        return {
+            uid, displayName,
+            control: {
+                type: powerbi.visuals.FormattingComponent.Dropdown,
+                properties: {
+                    descriptor: Visual.desc(prop),
+                    items,
+                    value: items.find((i) => i.value === value) ?? items[0]
+                }
+            }
+        };
+    }
+
     public getFormattingModel(): powerbi.visuals.FormattingModel {
+        const s = this.settings;
         return {
             cards: [
                 {
                     uid: "kpiTextCard", displayName: "Text",
+                    groups: [
+                        {
+                            uid: "kpiFontGroup", displayName: "Font",
+                            slices: [{
+                                uid: "kpiFontFamilySlice", displayName: "Font family",
+                                control: {
+                                    type: powerbi.visuals.FormattingComponent.FontPicker,
+                                    properties: { descriptor: Visual.desc("fontFamily"), value: s.fontFamily }
+                                }
+                            }]
+                        },
+                        {
+                            uid: "kpiValueTextGroup", displayName: "Value",
+                            slices: [
+                                this.numSlice("kpiFontSizeSlice", "Font size", "fontSize", s.fontSize, 4, 200, "px"),
+                                this.colorSlice("kpiValueColorSlice", "Colour", "valueColor", s.valueColor)
+                            ]
+                        },
+                        {
+                            uid: "kpiCaptionGroup", displayName: "Caption",
+                            slices: [
+                                this.textSlice("kpiCaptionSlice", "Caption text", "caption", s.caption, "e.g. Revenue"),
+                                this.numSlice("kpiCaptionSizeSlice", "Font size", "captionSize", s.captionSize, 4, 200, "px"),
+                                this.colorSlice("kpiCaptionColorSlice", "Colour", "captionColor", s.captionColor)
+                            ]
+                        },
+                        {
+                            uid: "kpiSubtitleGroup", displayName: "Subtitle",
+                            slices: [
+                                this.numSlice("kpiSubtitleSizeSlice", "Font size", "subtitleSize", s.subtitleSize, 4, 200, "px"),
+                                this.colorSlice("kpiSubtitleColorSlice", "Colour", "subtitleColor", s.subtitleColor)
+                            ]
+                        }
+                    ]
+                },
+                {
+                    uid: "kpiFormatCard", displayName: "Value format",
                     groups: [{
-                        uid: "kpiTextGroup", displayName: "Text",
-                        slices: [{
-                            uid: "kpiFontSizeSlice", displayName: "Value font size",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.NumUpDown,
-                                properties: { descriptor: { objectName: "cardStyle", propertyName: "fontSize" }, value: this.lastFontSize }
-                            }
-                        }]
+                        uid: "kpiFormatGroup", displayName: "Value format",
+                        slices: [
+                            this.dropdownSlice("kpiValueFormatSlice", "Format", "valueFormat", s.valueFormat, [
+                                { value: "number", displayName: "Number" },
+                                { value: "currency", displayName: "Currency" },
+                                { value: "percent", displayName: "Percentage" },
+                                { value: "decimal1", displayName: "Decimal" }
+                            ]),
+                            this.textSlice("kpiCurrencySlice", "Currency code", "currencyCode", s.currencyCode, "USD"),
+                            this.numSlice("kpiDecimalsSlice", "Decimal places", "decimals", s.decimals ?? 0, 0, 4),
+                            this.toggleSlice("kpiCompactSlice", "Compact notation", "compact", s.compact)
+                        ]
+                    }]
+                },
+                {
+                    uid: "kpiDeltaCard", displayName: "Delta badge",
+                    groups: [
+                        {
+                            uid: "kpiDeltaBehaviourGroup", displayName: "Behaviour",
+                            slices: [
+                                this.dropdownSlice("kpiDirectionSlice", "Good direction", "direction", s.direction, [
+                                    { value: "up", displayName: "Up is good" },
+                                    { value: "down", displayName: "Down is good" },
+                                    { value: "neutral", displayName: "Neutral" }
+                                ]),
+                                this.dropdownSlice("kpiDeltaFormatSlice", "Delta format", "deltaFormat", s.deltaFormat, [
+                                    { value: "auto", displayName: "Follow value format" },
+                                    { value: "percent", displayName: "Percentage points (pp)" },
+                                    { value: "percentChange", displayName: "Percent change (%)" },
+                                    { value: "currency", displayName: "Currency" }
+                                ])
+                            ]
+                        },
+                        {
+                            uid: "kpiIndicatorGroup", displayName: "Appearance",
+                            slices: [
+                                this.numSlice("kpiDeltaSizeSlice", "Font size", "deltaSize", s.deltaSize, 4, 200, "px"),
+                                this.colorSlice("kpiGoodSlice", "Up / good", "goodColor", s.goodColor),
+                                this.colorSlice("kpiBadSlice", "Down / bad", "badColor", s.badColor),
+                                this.colorSlice("kpiNeutralSlice", "Neutral", "neutralColor", s.neutralColor)
+                            ]
+                        }
+                    ]
+                },
+                {
+                    uid: "kpiAccentCard", displayName: "Accent bar",
+                    groups: [{
+                        uid: "kpiAccentGroup", displayName: "Accent bar",
+                        slices: [this.colorSlice("kpiAccentSlice", "Colour", "accentColor", s.accentColor)]
+                    }]
+                },
+                {
+                    uid: "kpiHeaderCard", displayName: "Header mode",
+                    groups: [{
+                        uid: "kpiHeaderGroup", displayName: "Header mode",
+                        slices: [
+                            this.toggleSlice("kpiHeaderModeSlice", "Render caption as header", "headerMode", s.headerMode),
+                            this.numSlice("kpiHeaderSizeSlice", "Font size", "headerSize", s.headerSize, 4, 200, "px"),
+                            this.colorSlice("kpiHeaderColorSlice", "Text colour", "headerColor", s.headerColor),
+                            this.colorSlice("kpiHeaderBgSlice", "Background", "headerBg", s.headerBg)
+                        ]
                     }]
                 },
                 {
                     uid: "kpiNoDataCard", displayName: "No data",
                     groups: [{
                         uid: "kpiNoDataGroup", displayName: "No data",
-                        slices: [{
-                            uid: "kpiEmptyDefaultSlice", displayName: "Value when empty",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.TextInput,
-                                properties: { descriptor: { objectName: "cardStyle", propertyName: "emptyDefault" }, value: this.lastEmptyDefault, placeholder: "0" }
-                            }
-                        }]
-                    }]
-                },
-                {
-                    uid: "kpiIndicatorCard", displayName: "Indicators",
-                    groups: [{
-                        uid: "kpiIndicatorGroup", displayName: "Indicator colours",
-                        slices: [
-                            {
-                                uid: "kpiGoodSlice", displayName: "Up / good",
-                                control: { type: powerbi.visuals.FormattingComponent.ColorPicker, properties: { descriptor: { objectName: "cardStyle", propertyName: "goodColor" }, value: { value: this.lastGood } } }
-                            },
-                            {
-                                uid: "kpiBadSlice", displayName: "Down / bad",
-                                control: { type: powerbi.visuals.FormattingComponent.ColorPicker, properties: { descriptor: { objectName: "cardStyle", propertyName: "badColor" }, value: { value: this.lastBad } } }
-                            },
-                            {
-                                uid: "kpiNeutralSlice", displayName: "Neutral",
-                                control: { type: powerbi.visuals.FormattingComponent.ColorPicker, properties: { descriptor: { objectName: "cardStyle", propertyName: "neutralColor" }, value: { value: this.lastNeutral } } }
-                            },
-                            {
-                                uid: "kpiAccentSlice", displayName: "Accent bar",
-                                control: { type: powerbi.visuals.FormattingComponent.ColorPicker, properties: { descriptor: { objectName: "cardStyle", propertyName: "accentColor" }, value: { value: this.lastAccent } } }
-                            }
-                        ]
+                        slices: [this.textSlice("kpiEmptyDefaultSlice", "Value when empty", "emptyDefault", s.emptyDefault, "0")]
                     }]
                 }
             ]

@@ -20,7 +20,7 @@ Key features:
 - **Deltas that read correctly.** The badge can carry a different format from the value, so a currency card shows a percentage change ("$1.28M, up 4.2%"). Percent values report their delta in percentage points ("pp"), which is what a change in a rate actually means.
 - **Value when empty.** When the measure returns blank (for example no rows yet this month), the card shows a configurable default instead of (Blank). A numeric default such as 0 is formatted exactly like a real value.
 - **Header mode.** Flip a toggle and the card renders its caption as a crisp text header, sharper than native text boxes under page scaling on high DPI displays.
-- **Styleable.** Accent colour, good/bad/neutral colours, font size and header styling are all in the Format pane.
+- **Styleable, properly.** Font family, and a font size and colour for the value, caption, subtitle and delta badge independently. Accent colour, good/bad/neutral colours and header styling too. Every setting the visual has is in the Format pane - none of it is theme-file only.
 - **Certified friendly.** No external services, no data leaves your report, and the visual supports the Rendering Events API and context menus.
 
 Ideal for KPI strips across the top of a dashboard where consistency, crisp text and sensible empty states matter.
@@ -45,8 +45,8 @@ Ideal for KPI strips across the top of a dashboard where consistency, crisp text
 - Support document link: https://github.com/easthersteven/powerbi-visual-accent-kpi-card/blob/main/SUPPORT.md
 
 **Technical configuration page:**
-- PBIVIZ package: `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.2.0.0.pbiviz`
-  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-accent-kpi-card\dist\accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.2.0.0.pbiviz`)
+- PBIVIZ package: `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.3.0.0.pbiviz`
+  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-accent-kpi-card\dist\accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.3.0.0.pbiviz`)
 - Sample PBIX: `store/accent-kpi-card-sample.pbix` - must open offline with no external
   connections, embed its own sample data, and use this exact visual version.
 
@@ -61,6 +61,6 @@ Ideal for KPI strips across the top of a dashboard where consistency, crisp text
    Verified: npm audit clean, eslint clean, `pbiviz package --certification-audit`
    reports no external requests, capabilities declare `"privileges": []`.
 
-**Pre-publish checks (26 Aug 2026, v1.2.0.0):** npm audit 0 vulnerabilities; eslint
+**Pre-publish checks (27 Aug 2026, v1.3.0.0):** npm audit 0 vulnerabilities; eslint
 clean; unit tests pass; certification audit found no external requests; logo 300x300 and
 screenshot 1366x768 within size limits; main and certification branches identical.

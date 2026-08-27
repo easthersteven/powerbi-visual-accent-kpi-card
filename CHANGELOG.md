@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.3.0.0 (2026-08-27)
+
+Makes every setting reachable from the Format pane, and adds the text controls the card was
+missing.
+
+- **Eleven properties were unreachable.** `caption`, `valueFormat`, `currencyCode`, `compact`,
+  `decimals`, `deltaFormat`, `direction`, `headerMode`, `headerColor`, `headerSize` and
+  `headerBg` were declared in `capabilities.json` but never returned from
+  `getFormattingModel`. At API 5.x the pane is built solely from that model, so they could
+  only be set by hand-editing a theme file. All are now in the pane.
+- **Font family.** A font picker sets the typeface for the whole card; it was hardcoded to
+  Segoe UI in the stylesheet.
+- **Independent text colours.** The value, caption and subtitle each take their own colour.
+  Previously the value and caption were fixed at `#023864` and the subtitle at `#605E5C` in
+  the stylesheet, with no property behind them.
+- **Independent font sizes.** The caption, subtitle and delta badge each take their own size.
+  They were previously derived from the value size by fixed multipliers (x0.37, x0.53,
+  x0.37), so they could not be adjusted against each other.
+- **Value and delta formats are dropdowns** rather than free text, listing the formats the
+  visual actually implements.
+- Settings are read once per update into a single validated object. Sizes from a hand-edited
+  theme file are range-checked, so an out-of-range value falls back to the default instead of
+  rendering an unusable card.
+- A test asserts that every property declared in `capabilities.json` appears in the Format
+  pane, so this cannot regress silently.
+
 ## 1.2.0.0 (2026-08-25)
 
 Addresses all three findings from the AppSource certification review of 25 August 2026.

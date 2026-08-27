@@ -12,3 +12,6 @@ store/*.SemanticModel/cache.abf
 
 # Windows reserved name; created accidentally by tools writing to /dev/null
 nul
+
+# stray temp file from an interrupted sample repack
+store/*.pbix.tmp

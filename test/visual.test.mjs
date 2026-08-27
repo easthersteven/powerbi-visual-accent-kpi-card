@@ -123,9 +123,71 @@ test("shows the landing page instead of an empty card when there is no data", ()
     assert.deepEqual(captured.events, ["started", "finished"]);
 });
 
-test("getFormattingModel exposes text, no-data, and indicator cards", () => {
+// Collect every propertyName the Format pane actually renders, walking cards > groups > slices.
+function paneProperties(model) {
+    const names = new Set();
+    for (const card of model.cards ?? []) {
+        for (const group of card.groups ?? []) {
+            for (const slice of group.slices ?? []) {
+                const props = slice.control?.properties ?? {};
+                if (props.descriptor?.propertyName) names.add(props.descriptor.propertyName);
+                // composite controls nest one level deeper
+                for (const v of Object.values(props)) {
+                    if (v && typeof v === "object" && v.descriptor?.propertyName) names.add(v.descriptor.propertyName);
+                }
+            }
+        }
+    }
+    return names;
+}
+
+// At API 5.x the Format pane is built solely from getFormattingModel, so a property declared
+// in capabilities.json but missing here is unreachable to the report author - it can only be
+// set by hand-editing a theme file. This guards against that drifting back.
+test("every declared property is reachable in the Format pane", async () => {
+    const { readFileSync } = await import("node:fs");
+    const caps = JSON.parse(readFileSync(new URL("../capabilities.json", import.meta.url), "utf8"));
+    const declared = Object.keys(caps.objects.cardStyle.properties);
     const { visual } = makeVisual();
-    assert.equal(visual.getFormattingModel().cards.length, 3);
+    const shown = paneProperties(visual.getFormattingModel());
+    const missing = declared.filter((p) => !shown.has(p));
+    assert.deepEqual(missing, [], "properties declared but not shown in the Format pane");
+});
+
+test("the Format pane exposes font family, sizes and colours for each text element", () => {
+    const { visual } = makeVisual();
+    const shown = paneProperties(visual.getFormattingModel());
+    for (const p of ["fontFamily", "fontSize", "valueColor", "captionSize", "captionColor",
+        "subtitleSize", "subtitleColor", "deltaSize"]) {
+        assert.ok(shown.has(p), p + " must be settable in the Format pane");
+    }
+});
+
+test("the card renders the configured font, sizes and colours", () => {
+    const { visual, element } = makeVisual();
+    const objects = {
+        cardStyle: {
+            caption: "Revenue",
+            fontFamily: "Georgia, serif",
+            fontSize: 44,
+            valueColor: { solid: { color: "#112233" } },
+            captionSize: 20,
+            captionColor: { solid: { color: "#445566" } },
+            subtitleSize: 18,
+            subtitleColor: { solid: { color: "#778899" } }
+        }
+    };
+    visual.update({ dataViews: [dataView({ main: 10, subtitle: "YTD", objects })] });
+    assert.equal(element.style.fontFamily, "Georgia, serif");
+    const value = element.querySelector(".kpi-value");
+    assert.equal(value.style.fontSize, "44px");
+    assert.equal(value.style.color, "rgb(17, 34, 51)");
+    const caption = element.querySelector(".kpi-caption");
+    assert.equal(caption.style.fontSize, "20px");
+    assert.equal(caption.style.color, "rgb(68, 85, 102)");
+    const subtitle = element.querySelector(".subtitle-value");
+    assert.equal(subtitle.style.fontSize, "18px");
+    assert.equal(subtitle.style.color, "rgb(119, 136, 153)");
 });
 
 test("right-click opens the context menu", () => {
