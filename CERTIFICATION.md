@@ -4,6 +4,7 @@
 **Publisher:** Obliwise
 **Submitted:** 24 August 2026 (v1.1.0.0)
 **Review completed:** 25 August 2026 - **Attention needed, resubmission required**
+**Resubmitted:** 27 August 2026 (v1.3.0.0) - awaiting review outcome
 
 ## Findings
 
@@ -79,10 +80,10 @@ in "Testing submissions of Power BI custom visuals".
 | Sample .pbix embeds the submitted visual version (1180.2.3) | **Fixed** - sample embeds 1.3.0.0, byte-identical to `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.3.0.0.pbiviz` |
 | No external services; `privileges: []` | Pass - certification audit reports no external requests |
 
-`pbiviz package --certification-audit` reports **no recommended-feature warnings**. The
-features it still lists are informational extras (Analytics Pane, Conditional Formatting,
-Drill Down, Fetch More Data, File Download, Launch URL, Local Storage, Modal Dialog, Warning
-Icon); several of those would require privileges that certification forbids.
+`pbiviz package --certification-audit` reports no external requests. It also lists 9
+optional features - informational extras (Analytics Pane, Conditional Formatting, Drill
+Down, Fetch More Data, File Download, Launch URL, Local Storage, Modal Dialog, Warning
+Icon), several of which would require privileges that certification forbids.
 
 ## Format pane coverage (27 August 2026)
 
@@ -101,20 +102,20 @@ asserts that, so it cannot regress silently.
 
 ## Current state (27 August 2026)
 
-**Ready to submit:** 1.3.0.0. Package built and audited at
-`dist/` - upload that file on the Partner Center Technical configuration page, and paste the
-notes from `store/listing.md` into Notes for certification on Review and publish.
+**Submitted 27 August 2026 at 1.3.0.0. Awaiting review outcome.**
 
-**Outstanding before upload:** the sample .pbix is one version behind.
-`store/accent-kpi-card-sample.pbix` was re-saved from Power BI Desktop on 27 August 2026 and
-embeds **1.2.0.0**, but this build is 1.3.0.0. Desktop still had the file open when 1.3.0.0
-was packaged, so it could not be updated in place. Re-import
-`dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.3.0.0.pbiviz` and save again - a real
-Desktop save is preferable to a payload swap in any case.
+**What went up:** `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.3.0.0.pbiviz` and `store/accent-kpi-card-sample.pbix`, uploaded together on the Technical
+configuration page, with the reviewer notes from `store/listing.md` pasted into Notes for
+certification on Review and publish.
 
-Then upload both slots together: uploading one alone is what produced the 1180.2.3 failure on
-Pill Toggle Slicer.
+**Sample file:** re-saved from Power BI Desktop on 27 August 2026. It embeds 1.3.0.0, matching
+the submitted package - JS, CSS and capabilities byte-identical. The model is import-mode
+with inline sample data, so it opens offline with no data sources, connectors or credentials.
 
-**Verified at this version:** npm audit 0 vulnerabilities; ESLint clean; 48 tests passing at
-98% statement coverage; `pbiviz package --certification-audit` reports no external requests
-and no recommended-feature warnings.
+**Verified at this version:** npm audit 0 vulnerabilities; ESLint clean; 48 tests passing
+at 98% statement coverage; `pbiviz package --certification-audit` reports no external
+requests. It also lists 9 optional features - the informational extras described above,
+not failures.
+
+**If this review raises anything,** fix it in a new version and upload both slots again.
+Re-uploading one slot alone is what produced the 1180.2.3 failure on Pill Toggle Slicer.
