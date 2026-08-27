@@ -45,8 +45,8 @@ Ideal for KPI strips across the top of a dashboard where consistency, crisp text
 - Support document link: https://github.com/easthersteven/powerbi-visual-accent-kpi-card/blob/main/SUPPORT.md
 
 **Technical configuration page:**
-- PBIVIZ package: `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.3.0.0.pbiviz`
-  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-accent-kpi-card\dist\accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.3.0.0.pbiviz`)
+- PBIVIZ package: `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.4.0.0.pbiviz`
+  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-accent-kpi-card\dist\accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.4.0.0.pbiviz`)
 - Sample PBIX: `store/accent-kpi-card-sample.pbix` - must open offline with no external
   connections, embed its own sample data, and use this exact visual version.
 
@@ -57,8 +57,8 @@ Ideal for KPI strips across the top of a dashboard where consistency, crisp text
    line so it pastes without re-wrapping.
 
 ```text
-Accent KPI Card 1.3.0.0 - Product ID e569891a-3a03-4a79-b794-2f5d6670819a
-Supersedes 1.1.0.0, reviewed 25 August 2026.
+Accent KPI Card 1.4.0.0 - Product ID e569891a-3a03-4a79-b794-2f5d6670819a
+Supersedes 1.3.0.0, reviewed 27 August 2026.
 
 SOURCE AND BUILD
 Repository: https://github.com/easthersteven/powerbi-visual-accent-kpi-card
@@ -67,13 +67,12 @@ Access: public repository, no credentials required.
 Build: npm install, then npm run package.
 Tooling: powerbi-visuals-tools 7.2.1, API 5.11.0.
 
-RESPONSE TO THE REVIEW OF 25 AUGUST 2026
-1180.2.2 resize (blocking) - fixed. The root container is overflow:auto and the body no longer compresses below its content, so scroll bars appear instead of the caption, value and delta being clipped. Reproducible at roughly 150x80 px.
-1180.2.2.2 tool tips - fixed. Hovering the card shows the value, subtitle and delta through the host tooltip service, each row named after the measure bound to it.
-1180.2.2.3 filter out - fixed. Clicking the card selects its measure and cross-filters the page; clicking again clears it and Ctrl+click adds to a selection. The selected card is outlined, and selection made elsewhere is reflected back through registerOnSelectCallback.
+RESPONSE TO THE REVIEW OF 27 AUGUST 2026
+1180.2.2 resize (blocking) - fixed by making the scroll bars visible. The card has scrolled rather than clipped since the previous fix (the root container is overflow:auto and the body does not compress below its content), but on hosts with overlay scrollbars (WebView2 with Windows' "automatically hide scroll bars" default) the bar paints nothing until the user scrolls, so a resized card appeared clipped. The scrollbars are now explicitly styled (scrollbar-width/scrollbar-color plus ::-webkit-scrollbar), which renders a persistent thin bar with a visible track whenever content overflows, vertically and horizontally, at any visual size. Reproducible by sizing the visual to roughly 150x80 px: both scroll bars render and every element (caption, value, subtitle, delta badge) is reachable. Under high contrast the scrollbar takes its colours from the host palette.
+1180.2.2.3 filter out (soft) - by design. The card is a single-value visual bound to measures only; it has no category data points, so there is no identity the host could filter other visuals by. Clicking the card still selects it (outlined, Enter/Space accessible, honours Edit interactions), and selection made elsewhere is reflected back through registerOnSelectCallback.
 
-ALSO IN THIS VERSION
-Every property declared in capabilities.json is now returned from getFormattingModel, so the whole configuration surface is reachable in the Format pane. Adds a font family picker and an independent font size and colour for the value, caption, subtitle and delta badge.
+CARRIED OVER FROM 1.3.0.0 (passed 27 August 2026)
+Tool tips through the host tooltip service. Every property declared in capabilities.json is returned from getFormattingModel, so the whole configuration surface is reachable in the Format pane, including a font family picker and independent font sizes and colours for the value, caption, subtitle and delta badge.
 
 HOST BEHAVIOUR AND ACCESSIBILITY
 High contrast mode takes every colour from the host palette. The card is focusable and Enter or Space activates it; supportsKeyboardFocus is declared. Honours the report's Edit interactions setting. Shows the highlighted figure when another visual highlights a subset (supportsHighlight). Supports the Rendering Events API and context menus. Strings are localised through stringResources and the host localization manager, and a landing page explains the visual when nothing is bound.
@@ -82,9 +81,11 @@ SECURITY AND PRIVACY
 No external services and no network calls of any kind; no data leaves the report. capabilities.json declares "privileges": []. pbiviz package --certification-audit reports no external requests. npm audit reports 0 vulnerabilities. 48 unit tests pass.
 
 SAMPLE FILE
-accent-kpi-card-sample.pbix opens offline: the model is import-mode with inline sample data, with no data sources, connectors or credentials. It embeds visual version 1.3.0.0, matching the submitted .pbiviz. Page 1 shows four cards, left to right: a currency value in compact notation (AUD) with a percentage-change delta, a down-is-good metric (open tickets), a percentage whose delta reads in percentage points, and a card whose measure returns BLANK() to demonstrate the configurable empty value. Page 2 documents the settings.
+accent-kpi-card-sample.pbix opens offline: the model is import-mode with inline sample data, with no data sources, connectors or credentials. It embeds visual version 1.4.0.0, matching the submitted .pbiviz. Page 1 shows four cards, left to right: a currency value in compact notation (AUD) with a percentage-change delta, a down-is-good metric (open tickets), a percentage whose delta reads in percentage points, and a card whose measure returns BLANK() to demonstrate the configurable empty value. Page 2 documents the settings.
 ```
 
-**Pre-publish checks - all passed; submitted to Partner Center 27 Aug 2026 (v1.3.0.0):** npm audit 0 vulnerabilities; eslint
-clean; unit tests pass; certification audit found no external requests; logo 300x300 and
-screenshot 1366x768 within size limits; main and certification branches identical.
+**Pre-publish checks - passed 28 Aug 2026 (v1.4.0.0), resubmission pending:** npm audit 0
+vulnerabilities; eslint clean; 48 unit tests pass; certification audit found no external
+requests; logo 300x300 and screenshot 1366x768 within size limits. Before resubmitting:
+open `store/accent-kpi-card-sample.pbix` once in Power BI Desktop to confirm it renders,
+and push main and certification so both match the submitted package.

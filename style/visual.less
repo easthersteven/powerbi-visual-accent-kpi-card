@@ -7,6 +7,32 @@
     // Scroll rather than clip when the host shrinks the visual below its content, so every
     // element stays reachable at any size (Power BI certification policy 1180.2.2).
     overflow: auto;
+    // Overlay scrollbars (WebView2 with Windows "automatically hide scroll bars", the
+    // Power BI Desktop default) occupy no space and paint nothing until the user scrolls,
+    // so a shrunken card looked clipped in certification review even though it scrolled.
+    // Styling the scrollbar opts this element out of overlay rendering: a visible bar
+    // appears whenever content overflows. The standard properties win on Chromium 121+
+    // and Firefox; the ::-webkit-* rules cover older WebView2 hosts.
+    scrollbar-width: thin;
+    scrollbar-color: var(--kpi-scrollbar-thumb, rgba(96, 94, 92, 0.55)) var(--kpi-scrollbar-track, rgba(96, 94, 92, 0.12));
+
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: var(--kpi-scrollbar-thumb, rgba(96, 94, 92, 0.55));
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: var(--kpi-scrollbar-track, rgba(96, 94, 92, 0.12));
+    }
+
+    &::-webkit-scrollbar-corner {
+        background: transparent;
+    }
     cursor: pointer;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

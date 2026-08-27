@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.4.0.0 (2026-08-28)
+
+Makes the scroll behaviour *visible*. The certification review of 27 August 2026 failed the
+resize test (policy 1180.2.2) again, even though the card has scrolled instead of clipping
+since 1.2.0.0.
+
+- **Visible scroll bars.** The root was already `overflow: auto`, but on hosts with overlay
+  scrollbars - WebView2 with Windows' default "automatically hide scroll bars", which is
+  what Power BI Desktop runs on - an overlay scrollbar occupies no layout space and paints
+  nothing until the user actually scrolls. A shrunken card therefore looked clipped with no
+  scroll bars, which is exactly what the reviewer's video showed. The scrollbar is now
+  explicitly styled (standard `scrollbar-width`/`scrollbar-color`, plus `::-webkit-scrollbar`
+  rules for older WebView2 hosts), which opts the element out of overlay rendering: a thin
+  bar with a visible track renders whenever content overflows, vertically and horizontally.
+- **High contrast.** The scrollbar thumb and track take the host palette's foreground and
+  background under an accessibility theme, so the scroll affordance stays visible there too.
+
 ## 1.3.0.0 (2026-08-27)
 
 Makes every setting reachable from the Format pane, and adds the text controls the card was

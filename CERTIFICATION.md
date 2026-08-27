@@ -4,9 +4,43 @@
 **Publisher:** Obliwise
 **Submitted:** 24 August 2026 (v1.1.0.0)
 **Review completed:** 25 August 2026 - **Attention needed, resubmission required**
-**Resubmitted:** 27 August 2026 (v1.3.0.0) - awaiting review outcome
+**Resubmitted:** 27 August 2026 (v1.3.0.0)
+**Review completed:** 27 August 2026 - **Attention needed, resubmission required**
+**Fix ready:** 28 August 2026 (v1.4.0.0) - not yet resubmitted
 
-## Findings
+## Findings - review of 27 August 2026 (v1.3.0.0)
+
+### 1180.2.2 Core Functions - BLOCKING (again)
+
+Same boilerplate as 25 August, word for word ("bars at the bottom" included), plus a video:
+when height is reduced, bottom content is not visible and no scroll bars appear.
+
+**Cause:** the 1.2.0.0 fix (`overflow: auto`, non-compressing body) works - the card really
+does scroll - but Power BI Desktop runs on WebView2, and with Windows' default
+"automatically hide scroll bars" setting the scrollbar is an *overlay*: it occupies no
+layout space and paints nothing until the user actually scrolls. In a passive resize test
+the card looks clipped with no scroll bars, which is what the reviewer recorded. Verified
+locally by replicating the packaged DOM + CSS in Edge: unstyled, the scrollbar consumed
+0 px and painted nothing; explicitly styled, it consumed its gutter and painted its thumb
+and track.
+
+**Fix (1.4.0.0):** style the scrollbar explicitly on the root - standard `scrollbar-width:
+thin` + `scrollbar-color` (win on Chromium 121+ and Firefox) plus `::-webkit-scrollbar`
+rules (cover older WebView2). Custom-styled scrollbars are classic, not overlay: they
+occupy layout space and render whenever content overflows, in both axes, regardless of the
+OS auto-hide setting. Under high contrast the thumb and track take the host palette via CSS
+variables set from `visual.ts`.
+
+### 1180.2.2.3 Core Functions - Filter Out - soft failure (again)
+
+"Does not appear to filter outwards", explicitly marked non-blocking. Accurate: the card
+selects its measure via `ISelectionManager`, but a measure-only selection carries no
+data-point identity, so the host has nothing to filter other visuals by. A single-value
+card has no categories; outward filtering is not meaningfully implementable without adding
+a category bucket the visual has no use for. Accept the soft failure and say so plainly in
+the certification notes rather than claiming cross-filtering that does not happen.
+
+## Findings - review of 25 August 2026 (v1.1.0.0)
 
 ### 1180.2.2 Core Functions - BLOCKING
 
@@ -59,7 +93,7 @@ in "Testing submissions of Power BI custom visuals".
 | Reviewer test | Status |
 | --- | --- |
 | Loads data and renders; convert to/from a native visual | Pass |
-| Resize; report size at minimum; scroll bars where needed | **Fixed** - root is `overflow: auto`, content no longer compressed |
+| Resize; report size at minimum; scroll bars where needed | **Fixed twice** - root is `overflow: auto` (1.2.0.0); scrollbars explicitly styled so they render even where the OS defaults to invisible overlay scrollbars (1.4.0.0) |
 | Tooltips on hover, correct after filtering | **Fixed** - host tooltip service, plus the `tooltips` capability |
 | Filters outward to other visuals | **Fixed** - selection through `ISelectionManager` |
 | Reflects selection made in other visuals | Pass - renders from the incoming dataView |
@@ -77,7 +111,7 @@ in "Testing submissions of Power BI custom visuals".
 | Landing page when nothing is bound | **Fixed** - explains what to bind |
 | Localization | **Fixed** - `stringResources` and the host localization manager |
 | Bookmarks | Pass |
-| Sample .pbix embeds the submitted visual version (1180.2.3) | **Fixed** - sample embeds 1.3.0.0, byte-identical to `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.3.0.0.pbiviz` |
+| Sample .pbix embeds the submitted visual version (1180.2.3) | **Fixed** - sample embeds 1.4.0.0, matching `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.4.0.0.pbiviz` |
 | No external services; `privileges: []` | Pass - certification audit reports no external requests |
 
 `pbiviz package --certification-audit` reports no external requests. It also lists 9
@@ -100,17 +134,21 @@ hardcoded in `style/visual.less`.
 All 24 declared properties are now returned from `getFormattingModel`, and a unit test
 asserts that, so it cannot regress silently.
 
-## Current state (27 August 2026)
+## Current state (28 August 2026)
 
-**Submitted 27 August 2026 at 1.3.0.0. Awaiting review outcome.**
+**1.4.0.0 built and ready; not yet resubmitted.** It answers the 27 August review's
+blocking 1180.2.2 finding with explicitly styled, always-rendered scrollbars (see the
+findings section above).
 
-**What went up:** `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.3.0.0.pbiviz` and `store/accent-kpi-card-sample.pbix`, uploaded together on the Technical
-configuration page, with the reviewer notes from `store/listing.md` pasted into Notes for
-certification on Review and publish.
+**To upload, together, on the Technical configuration page:**
+`dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.4.0.0.pbiviz` and
+`store/accent-kpi-card-sample.pbix`, with the reviewer notes from `store/listing.md`
+pasted into Notes for certification on Review and publish.
 
-**Sample file:** re-saved from Power BI Desktop on 27 August 2026. It embeds 1.3.0.0, matching
-the submitted package - JS, CSS and capabilities byte-identical. The model is import-mode
-with inline sample data, so it opens offline with no data sources, connectors or credentials.
+**Sample file:** the two embedded visual parts were replaced in place with the 1.4.0.0
+build (the surgical zip-part method; entry order preserved). Open it once in Power BI
+Desktop to confirm it renders before uploading. The model is import-mode with inline
+sample data, so it opens offline with no data sources, connectors or credentials.
 
 **Verified at this version:** npm audit 0 vulnerabilities; ESLint clean; 48 tests passing
 at 98% statement coverage; `pbiviz package --certification-audit` reports no external

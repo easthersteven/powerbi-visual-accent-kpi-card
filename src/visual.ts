@@ -165,6 +165,15 @@ export class Visual implements IVisual {
             const neutralColorEff = hc ? hcFore : s.neutralColor;
             this.target.style.background = hc ? hcBack : "";
             this.target.style.color = hc ? hcFore : "";
+            // The scrollbar follows the palette too, so the scroll affordance required by
+            // policy 1180.2.2 stays visible under an accessibility theme.
+            if (hc) {
+                this.target.style.setProperty("--kpi-scrollbar-thumb", hcFore);
+                this.target.style.setProperty("--kpi-scrollbar-track", hcBack);
+            } else {
+                this.target.style.removeProperty("--kpi-scrollbar-thumb");
+                this.target.style.removeProperty("--kpi-scrollbar-track");
+            }
             // Font family applies to the whole card, so every element inherits one typeface.
             this.target.style.fontFamily = s.fontFamily;
 
