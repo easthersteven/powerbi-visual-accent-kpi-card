@@ -31,7 +31,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "valueFormat accepts \"currency\", \"percent\" (one decimal), \"decimal1\", or empty for a whole number with thousands grouping. For currency, set currencyCode to an ISO 4217 code such as AUD, GBP or USD - an unrecognised code falls back to a plain number rather than showing the wrong symbol.",
+                    "value": "Format pane > Value format > Format offers Number, Currency, Percentage and Decimal. For Currency, set Currency code to an ISO 4217 code such as AUD, GBP or USD - an unrecognised code falls back to a plain number rather than showing the wrong symbol.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"
@@ -54,7 +54,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Set decimals (0-4) to tailor precision in any format - two decimal currency, a whole number percentage. Leave it unset and each format keeps its own default.",
+                    "value": "Set Decimal places (0-4) to tailor precision in any format - two decimal currency, a whole number percentage. Leave it at its default and each format keeps its own.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"
@@ -77,7 +77,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Turn on compact for headline figures: 1,284,000 becomes 1.28M and 52,000 becomes 52K. Small numbers are left alone, so 37 stays 37.",
+                    "value": "Turn on Compact notation for headline figures: 1,284,000 becomes 1.28M and 52,000 becomes 52K. Small numbers are left alone, so 37 stays 37.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"
@@ -100,7 +100,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "A percent card reports its delta in percentage points (\"1.1pp\") because a rate moving from 97.5% to 96.4% has fallen 1.1 points, not 1.1 percent. When the value is an absolute quantity and you want a proportional change, set deltaFormat to percentChange.",
+                    "value": "A percent card reports its delta in percentage points (\"1.1pp\") because a rate moving from 97.5% to 96.4% has fallen 1.1 points, not 1.1 percent. When the value is an absolute quantity and you want a proportional change, set Delta format to Percent change (%).",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"

@@ -42,7 +42,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "A delta that reads differently from the value - the revenue card shows a percentage change on a currency value. Set deltaFormat to percentChange.",
+                    "value": "A delta that reads differently from the value - the revenue card shows a percentage change on a currency value. Format pane > Delta badge > Delta format > Percent change (%).",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"
