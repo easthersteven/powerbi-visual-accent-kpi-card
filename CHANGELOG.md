@@ -5,6 +5,13 @@
 Real outward filtering, a wrap-instead-of-scroll option, and fixes from a full
 certification re-audit.
 
+- **Scrolling now actually works inside Power BI Desktop.** The Desktop sandbox styles
+  the element the visual renders into with `body.visual-sandbox #sandbox-host
+  { overflow: hidden }` - an ID selector that outweighs the stylesheet's class rule, so
+  every previous `overflow: auto` fix was silently overridden in Desktop: the card hard-
+  clipped with no scrolling at all, which is what the certification videos show.
+  `overflow: auto` is now set as an inline style from the constructor, which no host
+  stylesheet rule can beat. Pinned by a unit test.
 - **Scrollbar styling corrected - the 1.4.0.0 fix did not survive on overlay-scrollbar
   hosts.** The standard `scrollbar-width`/`scrollbar-color` properties override
   `::-webkit-scrollbar` on Chromium, and under overlay scrollbars (WebView2 / Power BI

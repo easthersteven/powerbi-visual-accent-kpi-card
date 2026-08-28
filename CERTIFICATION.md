@@ -15,14 +15,26 @@
 Same boilerplate as 25 August, word for word ("bars at the bottom" included), plus a video:
 when height is reduced, bottom content is not visible and no scroll bars appear.
 
-**Cause:** the 1.2.0.0 fix (`overflow: auto`, non-compressing body) works - the card really
-does scroll - but Power BI Desktop runs on WebView2, and with Windows' default
-"automatically hide scroll bars" setting the scrollbar is an *overlay*: it occupies no
-layout space and paints nothing until the user actually scrolls. In a passive resize test
-the card looks clipped with no scroll bars, which is what the reviewer recorded. Verified
-locally by replicating the packaged DOM + CSS in Edge: unstyled, the scrollbar consumed
-0 px and painted nothing; explicitly styled, it consumed its gutter and painted its thumb
-and track.
+**Cause - three layers, found in order:**
+1. **The sandbox's own stylesheet defeats the class rule entirely.** Power BI Desktop's
+   custom-visual sandbox (`cvSandboxPack.html`) styles the very element the visual
+   renders into with `body.visual-sandbox #sandbox-host { overflow: hidden }`. An ID
+   selector outweighs `.accent-kpi-card { overflow: auto }`, so in Desktop the card
+   never scrolled at all - hard clip, no wheel, no bar. This is what the reviewer's
+   video shows. (Corroboration: the Grouped Indicator Table sets `overflow` as an
+   *inline style*, which beats ID selectors - and it is the one visual that never
+   failed this test.) Fix: set `overflow: auto` inline from the constructor.
+2. **Overlay scrollbars paint nothing.** Even with scrolling active, WebView2 under
+   Windows' "automatically hide scroll bars" default renders overlay scrollbars: zero
+   layout space, painted only mid-scroll. Fix: `::-webkit-scrollbar` styling, which
+   forces a classic painted bar.
+3. **The standard properties defeat the webkit rules.** `scrollbar-width` /
+   `scrollbar-color` override `::-webkit-scrollbar` on Chromium and merely restyle the
+   invisible overlay bar. Fix: serve them to Firefox only
+   (`@supports (-moz-appearance: none)`).
+All three verified together by replicating the sandbox host CSS + the packaged visual
+CSS in Edge with overlay scrollbars force-enabled: the class-only variant computes
+`overflow: hidden` and clips; with the inline style, both bars paint at reduced sizes.
 
 **Fix (1.4.0.0, corrected in 1.5.0.0):** style the scrollbar explicitly on the root.
 `::-webkit-scrollbar` rules are what force a classic, painted bar on Chromium/WebView2 -

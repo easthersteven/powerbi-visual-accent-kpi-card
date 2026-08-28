@@ -212,6 +212,13 @@ test("scrolls rather than clipping when the host shrinks the visual (1180.2.2)",
     assert.doesNotMatch(root, /overflow:\s*hidden/, "overflow:hidden clips content when resized");
 });
 
+test("the element scrolls even though the sandbox styles #sandbox-host overflow:hidden (1180.2.2)", () => {
+    const { visual, element } = makeVisual();
+    visual.update({ dataViews: [dataView({ main: 1 })] });
+    assert.equal(element.style.overflow, "auto",
+        "overflow must be inline: Desktop's `body.visual-sandbox #sandbox-host{overflow:hidden}` ID rule beats any class rule");
+});
+
 test("scroll bars render even on overlay-scrollbar hosts (1180.2.2)", async () => {
     const { readFileSync } = await import("node:fs");
     const raw = readFileSync(new URL("../style/visual.less", import.meta.url), "utf8");
