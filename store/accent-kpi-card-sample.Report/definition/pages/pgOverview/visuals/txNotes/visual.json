@@ -3,10 +3,10 @@
   "name": "txNotes",
   "position": {
     "x": 40,
-    "y": 400,
+    "y": 580,
     "z": 0,
     "width": 1200,
-    "height": 200,
+    "height": 130,
     "tabOrder": 0
   },
   "visual": {
@@ -76,6 +76,17 @@
                 "textRuns": [
                   {
                     "value": "Value when empty - the last card is bound to a measure returning BLANK(). Instead of an empty card it shows the configured default, formatted like a real value.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#333333"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Cross-filtering - the bottom-left card binds Month to the Cross-filter field bucket, so it labels itself with the month and clicking it filters the column chart beside it. Click again to clear.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"

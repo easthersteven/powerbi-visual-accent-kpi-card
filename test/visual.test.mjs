@@ -212,6 +212,32 @@ test("scrolls rather than clipping when the host shrinks the visual (1180.2.2)",
     assert.doesNotMatch(root, /overflow:\s*hidden/, "overflow:hidden clips content when resized");
 });
 
+test("scroll bars render even on overlay-scrollbar hosts (1180.2.2)", async () => {
+    const { readFileSync } = await import("node:fs");
+    const raw = readFileSync(new URL("../style/visual.less", import.meta.url), "utf8");
+    const less = raw.replace(/\/\/[^\n]*/g, "");  // comments also mention the property names
+    assert.match(less, /::-webkit-scrollbar\b/, "webkit rules force a painted classic scrollbar on Chromium/WebView2");
+    const guard = less.indexOf("@supports (-moz-appearance: none)");
+    const std = less.indexOf("scrollbar-width");
+    assert.ok(guard >= 0, "the Firefox-only @supports guard must exist");
+    assert.ok(std > guard, "standard scrollbar properties must sit inside the Firefox guard - on Chromium they restyle the invisible overlay scrollbar and defeat the webkit rules");
+    assert.equal(less.split("scrollbar-width").length, 2, "scrollbar-width must appear exactly once, inside the guard");
+});
+
+test("removing the data clears the tooltip handler and the selection outline", async () => {
+    const { visual, element, captured } = makeVisual();
+    visual.update({ dataViews: [dataView({ main: 42 })] });
+    element.dispatchEvent(new dom.window.MouseEvent("click"));
+    await new Promise((r) => setTimeout(r, 0));
+    assert.equal(element.classList.contains("selected"), true);
+    element.dispatchEvent(new dom.window.MouseEvent("mousemove", { clientX: 5, clientY: 5 }));
+    assert.equal(captured.tooltips.length, 1);
+    visual.update({ dataViews: [] });
+    element.dispatchEvent(new dom.window.MouseEvent("mousemove", { clientX: 5, clientY: 5 }));
+    assert.equal(captured.tooltips.length, 1, "hovering the landing page must not show stale values");
+    assert.equal(element.classList.contains("selected"), false, "the selection outline must not survive data removal");
+});
+
 test("shows a tooltip naming the measures on hover (1180.2.2.2)", () => {
     const { visual, element, captured } = makeVisual();
     const objects = { cardStyle: { caption: "Revenue", direction: "up" } };

@@ -16,6 +16,7 @@
             "name": "Month",
             "dataType": "string",
             "sourceColumn": "Month",
+            "sortByColumn": "MonthNo",
             "summarizeBy": "none",
             "isHidden": false,
             "annotations": [

@@ -123,9 +123,14 @@ export class Visual implements IVisual {
             while (this.target.firstChild) this.target.removeChild(this.target.firstChild);
             this.selectionId = null;
             this.hideTooltip();
+            // Drop the previous render's tooltip handlers so a card whose data was just
+            // removed cannot show stale values from the landing page.
+            this.target.onmousemove = null;
+            this.target.onpointerdown = null;
 
             const dv: DataView = options.dataViews?.[0];
             if (!dv?.categorical?.values?.length) {
+                this.target.classList.remove("selected");
                 this.renderLandingPage();
                 this.events.renderingFinished(options);
                 return;
@@ -281,15 +286,18 @@ export class Visual implements IVisual {
                 deltaText,
                 deltaName: deltaCol?.source?.displayName,
             });
-            this.target.onmousemove = (ev: MouseEvent) => {
+            const showTip = (ev: MouseEvent, isTouch: boolean) => {
                 const rect = this.target.getBoundingClientRect();
                 this.tooltipService?.show({
                     coordinates: [ev.clientX - rect.left, ev.clientY - rect.top],
-                    isTouchEvent: false,
+                    isTouchEvent: isTouch,
                     dataItems: items,
                     identities: this.selectionId ? [this.selectionId] : [],
                 });
             };
+            this.target.onmousemove = (ev: MouseEvent) => showTip(ev, false);
+            // Touch devices get the tooltip from a tap - mousemove never fires there.
+            this.target.onpointerdown = (ev: PointerEvent) => { if (ev.pointerType === "touch") showTip(ev, true); };
 
             this.events.renderingFinished(options);
         } catch (error) {

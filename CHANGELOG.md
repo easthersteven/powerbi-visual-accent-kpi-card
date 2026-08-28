@@ -2,7 +2,25 @@
 
 ## 1.5.0.0 (2026-08-28)
 
-Real outward filtering and a wrap-instead-of-scroll option.
+Real outward filtering, a wrap-instead-of-scroll option, and fixes from a full
+certification re-audit.
+
+- **Scrollbar styling corrected - the 1.4.0.0 fix did not survive on overlay-scrollbar
+  hosts.** The standard `scrollbar-width`/`scrollbar-color` properties override
+  `::-webkit-scrollbar` on Chromium, and under overlay scrollbars (WebView2 / Power BI
+  Desktop with Windows' auto-hide default) they merely restyle the overlay bar - thin,
+  fading, zero layout space - so a resized card still showed no scrollbar. The standard
+  properties are now served to Firefox only (`@supports (-moz-appearance: none)`), leaving
+  the `::-webkit-scrollbar` rules in charge on Chromium, where they force a real painted
+  bar. Verified against Edge with overlay scrollbars force-enabled; a unit test now pins
+  the guard so it cannot regress.
+- **The sample report demonstrates outward filtering.** A fifth card binds Month to the
+  Cross-filter field bucket (it labels itself with the month) next to a native column
+  chart that visibly filters when the card is clicked.
+- **Stale tooltip fix.** Removing the bound data now also drops the tooltip handler and
+  selection outline, so hovering the landing page cannot show the previous data's values.
+- **Touch tooltips.** A tap shows the same tooltip as hovering - mousemove never fires on
+  touch devices.
 
 - **Cross-filter field (new optional bucket).** A measure-only card has no data identity,
   so clicking it could never filter other visuals (the 1180.2.2.3 soft failure). Bind the
@@ -25,10 +43,10 @@ since 1.2.0.0.
   scrollbars - WebView2 with Windows' default "automatically hide scroll bars", which is
   what Power BI Desktop runs on - an overlay scrollbar occupies no layout space and paints
   nothing until the user actually scrolls. A shrunken card therefore looked clipped with no
-  scroll bars, which is exactly what the reviewer's video showed. The scrollbar is now
-  explicitly styled (standard `scrollbar-width`/`scrollbar-color`, plus `::-webkit-scrollbar`
-  rules for older WebView2 hosts), which opts the element out of overlay rendering: a thin
-  bar with a visible track renders whenever content overflows, vertically and horizontally.
+  scroll bars, which is exactly what the reviewer's video showed. The scrollbar was
+  explicitly styled so a thin bar with a visible track renders whenever content overflows.
+  (As shipped here the standard properties reached every engine, which still left overlay
+  hosts bar-less - corrected in 1.5.0.0.)
 - **High contrast.** The scrollbar thumb and track take the host palette's foreground and
   background under an accessibility theme, so the scroll affordance stays visible there too.
 

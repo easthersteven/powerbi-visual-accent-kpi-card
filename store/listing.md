@@ -70,11 +70,11 @@ Build: npm install, then npm run package.
 Tooling: powerbi-visuals-tools 7.2.1, API 5.11.0.
 
 RESPONSE TO THE REVIEW OF 27 AUGUST 2026
-1180.2.2 resize (blocking) - fixed by making the scroll bars visible. The card has scrolled rather than clipped since the previous fix (the root container is overflow:auto and the body does not compress below its content), but on hosts with overlay scrollbars (WebView2 with Windows' "automatically hide scroll bars" default) the bar paints nothing until the user scrolls, so a resized card appeared clipped. The scrollbars are now explicitly styled (scrollbar-width/scrollbar-color plus ::-webkit-scrollbar), which renders a persistent thin bar with a visible track whenever content overflows, vertically and horizontally, at any visual size. Reproducible by sizing the visual to roughly 150x80 px: both scroll bars render and every element (caption, value, subtitle, delta badge) is reachable. Under high contrast the scrollbar takes its colours from the host palette.
+1180.2.2 resize (blocking) - fixed by making the scroll bars visible. The card has scrolled rather than clipped since the previous fix (the root container is overflow:auto and the body does not compress below its content), but on hosts with overlay scrollbars (WebView2 with Windows' "automatically hide scroll bars" default) the bar paints nothing until the user scrolls, so a resized card appeared clipped. The scrollbars are now explicitly styled with ::-webkit-scrollbar rules, which render a persistent thin bar with a visible track whenever content overflows, vertically and horizontally, at any visual size (the standard scrollbar-width/scrollbar-color properties are served to Firefox only, where those rules do not exist). Reproducible by sizing the visual to roughly 150x80 px: both scroll bars render and every element (caption, value, subtitle, delta badge) is reachable. Under high contrast the scrollbar takes its colours from the host palette.
 1180.2.2.3 filter out (soft) - fixed. A new optional Cross-filter field bucket gives the card a data identity: bind the field the card represents (e.g. a region or KPI name) and clicking the card selects that value and cross-filters the page; clicking again clears it and Ctrl+click adds to a selection. The selected card is outlined, activation works with Enter/Space, the report's Edit interactions setting is honoured, and selection made elsewhere is reflected back through registerOnSelectCallback. Without the bucket the card is measures-only and has no data-point identity to filter by.
 
 NEW IN 1.5.0.0
-Wrap text (Format pane, Layout): off by default the card scrolls as certified; turned on, long values, captions, subtitles and the delta badge wrap onto further lines instead of scrolling sideways, with vertical scrolling still available so nothing becomes unreachable. When no caption is set and the Cross-filter field is bound, the card labels itself with the bound value.
+Wrap text (Format pane, Layout): off by default the card scrolls as certified; turned on, long values, captions, subtitles and the delta badge wrap onto further lines instead of scrolling sideways, with vertical scrolling still available so nothing becomes unreachable. When no caption is set and the Cross-filter field is bound, the card labels itself with the bound value. Tooltips also show from a tap on touch devices, and removing the bound data clears the tooltip and selection state along with the card.
 
 CARRIED OVER FROM 1.3.0.0 (passed 27 August 2026)
 Tool tips through the host tooltip service. Every property declared in capabilities.json is returned from getFormattingModel, so the whole configuration surface is reachable in the Format pane, including a font family picker and independent font sizes and colours for the value, caption, subtitle and delta badge.
@@ -83,14 +83,20 @@ HOST BEHAVIOUR AND ACCESSIBILITY
 High contrast mode takes every colour from the host palette. The card is focusable and Enter or Space activates it; supportsKeyboardFocus is declared. Honours the report's Edit interactions setting. Shows the highlighted figure when another visual highlights a subset (supportsHighlight). Supports the Rendering Events API and context menus. Strings are localised through stringResources and the host localization manager, and a landing page explains the visual when nothing is bound.
 
 SECURITY AND PRIVACY
-No external services and no network calls of any kind; no data leaves the report. capabilities.json declares "privileges": []. pbiviz package --certification-audit reports no external requests. npm audit reports 0 vulnerabilities. 52 unit tests pass.
+No external services and no network calls of any kind; no data leaves the report. capabilities.json declares "privileges": []. pbiviz package --certification-audit reports no external requests. npm audit reports 0 vulnerabilities. 54 unit tests pass.
 
 SAMPLE FILE
-accent-kpi-card-sample.pbix opens offline: the model is import-mode with inline sample data, with no data sources, connectors or credentials. It embeds visual version 1.5.0.0, matching the submitted .pbiviz. Page 1 shows four cards, left to right: a currency value in compact notation (AUD) with a percentage-change delta, a down-is-good metric (open tickets), a percentage whose delta reads in percentage points, and a card whose measure returns BLANK() to demonstrate the configurable empty value. Page 2 documents the settings.
+accent-kpi-card-sample.pbix opens offline: the model is import-mode with inline sample data, with no data sources, connectors or credentials. It embeds visual version 1.5.0.0, matching the submitted .pbiviz. Page 1 shows four cards across the top, left to right: a currency value in compact notation (AUD) with a percentage-change delta, a down-is-good metric (open tickets), a percentage whose delta reads in percentage points, and a card whose measure returns BLANK() to demonstrate the configurable empty value. Below them, a fifth card binds Month to the Cross-filter field bucket (it labels itself with the month) next to a native column chart: clicking that card cross-filters the chart, demonstrating outward filtering (1180.2.2.3); clicking again clears it. Page 2 documents the settings.
 ```
 
 **Pre-publish checks - passed 28 Aug 2026 (v1.5.0.0), resubmission pending:** npm audit 0
-vulnerabilities; eslint clean; 52 unit tests pass; certification audit found no external
-requests; logo 300x300 and screenshot 1366x768 within size limits. Before resubmitting:
-open `store/accent-kpi-card-sample.pbix` once in Power BI Desktop to confirm it renders,
-and push main and certification so both match the submitted package.
+vulnerabilities; eslint clean; 54 unit tests pass; certification audit found no external
+requests; logo 300x300 and screenshot 1366x768 within size limits.
+
+**Before resubmitting - the sample .pbix MUST be re-saved from the PBIP:** the sample
+project gained the cross-filter demo (a fifth card bound to Month plus a native column
+chart), and report bindings cannot be patched into the .pbix by hand. Open
+`store/accent-kpi-card-sample.pbip` in Power BI Desktop, import
+`dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.5.0.0.pbiviz`, confirm the month
+card cross-filters the chart, then Save As over `store/accent-kpi-card-sample.pbix`.
+Upload both slots together.

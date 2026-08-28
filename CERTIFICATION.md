@@ -24,12 +24,16 @@ locally by replicating the packaged DOM + CSS in Edge: unstyled, the scrollbar c
 0 px and painted nothing; explicitly styled, it consumed its gutter and painted its thumb
 and track.
 
-**Fix (1.4.0.0):** style the scrollbar explicitly on the root - standard `scrollbar-width:
-thin` + `scrollbar-color` (win on Chromium 121+ and Firefox) plus `::-webkit-scrollbar`
-rules (cover older WebView2). Custom-styled scrollbars are classic, not overlay: they
-occupy layout space and render whenever content overflows, in both axes, regardless of the
-OS auto-hide setting. Under high contrast the thumb and track take the host palette via CSS
-variables set from `visual.ts`.
+**Fix (1.4.0.0, corrected in 1.5.0.0):** style the scrollbar explicitly on the root.
+`::-webkit-scrollbar` rules are what force a classic, painted bar on Chromium/WebView2 -
+they occupy layout space and render whenever content overflows, in both axes, regardless
+of the OS auto-hide setting. The standard `scrollbar-width`/`scrollbar-color` properties
+must reach **Firefox only** (`@supports (-moz-appearance: none)`): on Chromium they
+override the `::-webkit-*` rules and merely restyle the overlay bar - thin, fading, zero
+layout space - which is exactly the invisible-scrollbar failure again (1.4.0.0 shipped
+them unguarded and a narrow card still showed no bar; verified against Edge with overlay
+scrollbars force-enabled, and pinned by a unit test). Under high contrast the thumb and
+track take the host palette via CSS variables set from `visual.ts`.
 
 ### 1180.2.2.3 Core Functions - Filter Out - soft failure (again)
 
@@ -152,12 +156,16 @@ the findings section above and CHANGELOG.md).
 `store/accent-kpi-card-sample.pbix`, with the reviewer notes from `store/listing.md`
 pasted into Notes for certification on Review and publish.
 
-**Sample file:** the two embedded visual parts were replaced in place with the 1.5.0.0
-build (the surgical zip-part method; entry order preserved). Open it once in Power BI
-Desktop to confirm it renders before uploading. The model is import-mode with inline
-sample data, so it opens offline with no data sources, connectors or credentials.
+**Sample file - Desktop re-save REQUIRED before upload:** the PBIP project now carries
+the outward-filtering demo (a fifth card binding Month to the Cross-filter field bucket
+beside a native column chart), and report bindings cannot be patched into the .pbix by
+hand. Open `store/accent-kpi-card-sample.pbip` in Desktop, import the 1.5.0.0 `.pbiviz`,
+verify the month card cross-filters the chart, and Save As over
+`store/accent-kpi-card-sample.pbix`. Until that save, the committed .pbix embeds the
+right visual build but still shows the old four-card page. The model is import-mode with
+inline sample data, so it opens offline with no data sources, connectors or credentials.
 
-**Verified at this version:** npm audit 0 vulnerabilities; ESLint clean; 52 tests passing
+**Verified at this version:** npm audit 0 vulnerabilities; ESLint clean; 54 tests passing
 at 98% statement coverage; `pbiviz package --certification-audit` reports no external
 requests. It also lists 9 optional features - the informational extras described above,
 not failures.
