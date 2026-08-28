@@ -122,6 +122,27 @@
         white-space: normal;
     }
 
+    // Wrap mode (Format pane > Layout > Wrap text): long content breaks onto further lines
+    // instead of scrolling sideways. Vertical scrolling still applies when the wrapped
+    // content is taller than the visual, so nothing becomes unreachable (1180.2.2).
+    &.wrap {
+        .kpi-value-row {
+            flex-wrap: wrap;
+        }
+
+        .kpi-value,
+        .subtitle-value,
+        .kpi-caption {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        .delta {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+    }
+
     // a selected card is outlined, so cross-filtering is visible on the card itself
     &.selected {
         outline: 2px solid #1F908C;

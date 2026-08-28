@@ -166,6 +166,7 @@ export interface CardSettings {
     headerColor: string;
     headerSize: number;
     headerBg: string;
+    wrapText: boolean;
 }
 
 export const CARD_DEFAULTS: Readonly<CardSettings> = Object.freeze({
@@ -193,6 +194,7 @@ export const CARD_DEFAULTS: Readonly<CardSettings> = Object.freeze({
     headerColor: "#023864",
     headerSize: 14,
     headerBg: "transparent",
+    wrapText: false,
 });
 
 type Raw = Record<string, unknown> | undefined;
@@ -245,6 +247,7 @@ export function readSettings(rawObjects: unknown): CardSettings {
         headerColor: colorOf(raw, "headerColor", d.headerColor),
         headerSize: sizeOf(raw, "headerSize", d.headerSize),
         headerBg: colorOf(raw, "headerBg", d.headerBg),
+        wrapText: raw?.["wrapText"] === true,
     };
 }
 

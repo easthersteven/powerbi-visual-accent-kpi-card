@@ -29,7 +29,8 @@ function makeHost(captured) {
         colorPalette: captured.palette,
         get hostCapabilities() { return captured.hostCapabilities; },
         createSelectionIdBuilder: () => ({
-            withMeasure: (queryName) => ({ createSelectionId: () => ({ measure: queryName }) })
+            withMeasure: (queryName) => ({ createSelectionId: () => ({ measure: queryName }) }),
+            withCategory: (cat, i) => ({ createSelectionId: () => ({ category: cat?.source?.queryName, index: i }) })
         }),
         locale: "en-US"
     };
@@ -47,12 +48,16 @@ function makeVisual(highContrast = false) {
     return { visual, element, captured };
 }
 
-function dataView({ main, delta, subtitle, objects } = {}) {
+function dataView({ main, delta, subtitle, category, objects } = {}) {
     const values = [];
     if (main !== undefined) values.push({ source: { roles: { mainValue: true }, queryName: "Sales.Revenue", displayName: "Revenue" }, values: [main] });
     if (delta !== undefined) values.push({ source: { roles: { deltaValue: true }, queryName: "Sales.Change", displayName: "Revenue change" }, values: [delta] });
     if (subtitle !== undefined) values.push({ source: { roles: { subtitle: true } }, values: [subtitle] });
-    return { metadata: { objects }, categorical: { values } };
+    const categorical = { values };
+    if (category !== undefined) {
+        categorical.categories = [{ source: { roles: { filterField: true }, queryName: "Geo.Region", displayName: "Region" }, values: [category] }];
+    }
+    return { metadata: { objects }, categorical };
 }
 
 test("renders a percent-formatted value with caption and a good delta badge", () => {
@@ -233,6 +238,37 @@ test("clicking the card cross-filters, clicking again clears it (1180.2.2.3)", a
     await new Promise((r) => setTimeout(r, 0));
     assert.equal(captured.cleared, 1);
     assert.equal(element.classList.contains("selected"), false);
+});
+
+test("cross-filters by the bound cross-filter field's category identity (1180.2.2.3)", async () => {
+    const { visual, element, captured } = makeVisual();
+    visual.update({ dataViews: [dataView({ main: 42, category: "East" })] });
+    element.dispatchEvent(new dom.window.MouseEvent("click"));
+    await new Promise((r) => setTimeout(r, 0));
+    assert.equal(captured.selected.length, 1);
+    assert.equal(captured.selected[0].id.category, "Geo.Region", "selection carries the category identity, not the measure");
+    assert.equal(captured.selected[0].id.index, 0);
+});
+
+test("an unset caption falls back to the cross-filter field's value", () => {
+    const { visual, element } = makeVisual();
+    visual.update({ dataViews: [dataView({ main: 42, category: "East" })] });
+    assert.equal(element.querySelector(".kpi-caption").textContent, "East");
+});
+
+test("a set caption wins over the cross-filter field's value", () => {
+    const { visual, element } = makeVisual();
+    const objects = { cardStyle: { caption: "Revenue" } };
+    visual.update({ dataViews: [dataView({ main: 42, category: "East", objects })] });
+    assert.equal(element.querySelector(".kpi-caption").textContent, "Revenue");
+});
+
+test("wrap text: the Format pane toggle adds the wrap class, and off removes it", () => {
+    const { visual, element } = makeVisual();
+    visual.update({ dataViews: [dataView({ main: 42, objects: { cardStyle: { wrapText: true } } })] });
+    assert.equal(element.classList.contains("wrap"), true);
+    visual.update({ dataViews: [dataView({ main: 42 })] });
+    assert.equal(element.classList.contains("wrap"), false);
 });
 
 test("does not attempt to select when no measure is bound", async () => {

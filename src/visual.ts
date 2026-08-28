@@ -107,7 +107,8 @@ export class Visual implements IVisual {
         page.appendChild(el("div", "kpi-landing-title", this.text("Landing_Title", "Accent KPI Card")));
         page.appendChild(el("div", "kpi-landing-body", this.text("Landing_Body",
             "Add a measure to the Value field to get started. Bind Delta for a direction aware "
-            + "badge, and Subtitle for text beside the value.")));
+            + "badge, Subtitle for text beside the value, and Cross-filter field to let clicks "
+            + "filter the page.")));
         this.target.appendChild(page);
     }
 
@@ -131,6 +132,10 @@ export class Visual implements IVisual {
             }
 
             const vals = dv.categorical.values;
+            // Optional cross-filter field: the mapping reduces it to one row (top 1), and its
+            // value gives the card a real data identity so clicking can filter the page.
+            const cat = dv.categorical.categories?.[0];
+            const catValue = cat && cat.values?.length ? cat.values[0] : undefined;
             let mainVal: powerbi.PrimitiveValue = null;
             let deltaVal: powerbi.PrimitiveValue = null;
             let subtitleVal: powerbi.PrimitiveValue = null;
@@ -176,6 +181,12 @@ export class Visual implements IVisual {
             }
             // Font family applies to the whole card, so every element inherits one typeface.
             this.target.style.fontFamily = s.fontFamily;
+            // Wrap mode: long text wraps onto further lines instead of scrolling sideways.
+            this.target.classList.toggle("wrap", s.wrapText);
+
+            // An unset caption falls back to the cross-filter field's value, so a card bound
+            // to e.g. Region labels itself with the region it represents.
+            const caption = s.caption || (catValue != null ? String(catValue) : "");
 
             // HEADER MODE: render the caption as a crisp DOM header (sharper than native visual titles
             // under page scaling on high-DPI displays). Skips the accent/value/delta entirely.
@@ -183,7 +194,7 @@ export class Visual implements IVisual {
                 const hColor = hc ? hcFore : s.headerColor;
                 const hBg = hc ? hcBack : s.headerBg;
                 this.target.style.background = hBg;
-                const h = el("div", "kpi-header", s.caption);
+                const h = el("div", "kpi-header", caption);
                 h.style.color = hColor;
                 h.style.fontSize = s.headerSize + "px";
                 this.target.appendChild(h);
@@ -199,12 +210,15 @@ export class Visual implements IVisual {
                 ? resolveEmptyDefault(s.emptyDefault, s.valueFormat, this.locale, fmtOpts)
                 : formatMainValue(mainVal, s.valueFormat, this.locale, fmtOpts);
 
-            // Identify the bound measure so the card can cross-filter the page and so the
-            // tooltip carries an identity the host can use.
+            // Identity for cross-filtering and tooltips. A category identity (from the
+            // cross-filter field) can actually filter other visuals; a measure-only identity
+            // cannot, but still gives the tooltip an identity the host can use.
             const queryName = mainCol?.source?.queryName;
-            this.selectionId = queryName
-                ? this.host.createSelectionIdBuilder().withMeasure(queryName).createSelectionId()
-                : null;
+            this.selectionId = catValue !== undefined
+                ? this.host.createSelectionIdBuilder().withCategory(cat, 0).createSelectionId()
+                : queryName
+                    ? this.host.createSelectionIdBuilder().withMeasure(queryName).createSelectionId()
+                    : null;
             this.target.classList.toggle("selected", this.selected && !!this.selectionId);
 
             let deltaText = "";
@@ -215,8 +229,8 @@ export class Visual implements IVisual {
 
             const body = el("div", "kpi-body");
 
-            if (s.caption) {
-                const capEl = el("div", "kpi-caption", s.caption);
+            if (caption) {
+                const capEl = el("div", "kpi-caption", caption);
                 capEl.style.color = hc ? hcFore : s.captionColor;
                 capEl.style.fontSize = s.captionSize + "px";
                 body.appendChild(capEl);
@@ -260,7 +274,7 @@ export class Visual implements IVisual {
             // Tooltip on hover: what the card shows, plus the names of the bound measures
             // (certification policy 1180.2.2.2).
             const items = tooltipItems({
-                caption: s.caption,
+                caption,
                 valueName: mainCol?.source?.displayName,
                 formattedValue,
                 subtitle: subtitleVal != null ? String(subtitleVal) : "",
@@ -458,6 +472,13 @@ export class Visual implements IVisual {
                             this.colorSlice("kpiHeaderColorSlice", "Text colour", "headerColor", s.headerColor),
                             this.colorSlice("kpiHeaderBgSlice", "Background", "headerBg", s.headerBg)
                         ]
+                    }]
+                },
+                {
+                    uid: "kpiLayoutCard", displayName: "Layout",
+                    groups: [{
+                        uid: "kpiLayoutGroup", displayName: "Layout",
+                        slices: [this.toggleSlice("kpiWrapTextSlice", "Wrap text", "wrapText", s.wrapText)]
                     }]
                 },
                 {

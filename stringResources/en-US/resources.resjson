@@ -2,8 +2,9 @@
     "mainValue": "Value",
     "deltaValue": "Delta",
     "subtitle": "Subtitle",
+    "filterField": "Cross-filter field",
     "Landing_Title": "Accent KPI Card",
-    "Landing_Body": "Add a measure to the Value field to get started. Bind Delta for a direction aware badge, and Subtitle for text beside the value.",
+    "Landing_Body": "Add a measure to the Value field to get started. Bind Delta for a direction aware badge, Subtitle for text beside the value, and Cross-filter field to let clicks filter the page.",
     "Tooltip_Value": "Value",
     "Tooltip_Subtitle": "Subtitle",
     "Tooltip_Change": "Change"

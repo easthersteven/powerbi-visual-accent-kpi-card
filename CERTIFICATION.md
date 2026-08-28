@@ -6,7 +6,7 @@
 **Review completed:** 25 August 2026 - **Attention needed, resubmission required**
 **Resubmitted:** 27 August 2026 (v1.3.0.0)
 **Review completed:** 27 August 2026 - **Attention needed, resubmission required**
-**Fix ready:** 28 August 2026 (v1.4.0.0) - not yet resubmitted
+**Fix ready:** 28 August 2026 (v1.5.0.0) - not yet resubmitted
 
 ## Findings - review of 27 August 2026 (v1.3.0.0)
 
@@ -37,8 +37,13 @@ variables set from `visual.ts`.
 selects its measure via `ISelectionManager`, but a measure-only selection carries no
 data-point identity, so the host has nothing to filter other visuals by. A single-value
 card has no categories; outward filtering is not meaningfully implementable without adding
-a category bucket the visual has no use for. Accept the soft failure and say so plainly in
-the certification notes rather than claiming cross-filtering that does not happen.
+a category bucket.
+
+**Fix (1.5.0.0):** an optional **Cross-filter field** bucket (Grouping, max 1, top-1 data
+reduction) gives the card a real data identity. When bound, clicking the card selects that
+field's value through `ISelectionManager` and genuinely cross-filters the page; unbound,
+the card behaves as before and the soft failure would still apply. When no caption is set,
+the card labels itself with the bound value.
 
 ## Findings - review of 25 August 2026 (v1.1.0.0)
 
@@ -95,7 +100,7 @@ in "Testing submissions of Power BI custom visuals".
 | Loads data and renders; convert to/from a native visual | Pass |
 | Resize; report size at minimum; scroll bars where needed | **Fixed twice** - root is `overflow: auto` (1.2.0.0); scrollbars explicitly styled so they render even where the OS defaults to invisible overlay scrollbars (1.4.0.0) |
 | Tooltips on hover, correct after filtering | **Fixed** - host tooltip service, plus the `tooltips` capability |
-| Filters outward to other visuals | **Fixed** - selection through `ISelectionManager` |
+| Filters outward to other visuals | **Fixed (1.5.0.0)** - the optional Cross-filter field bucket carries a category identity; clicking selects it and filters the page. Unbound, a measure-only card has no identity to filter by |
 | Reflects selection made in other visuals | Pass - renders from the incoming dataView |
 | Highlighting from another visual | **Fixed** - shows the highlighted figure, `supportsHighlight` |
 | Edit interactions turned off | **Fixed** - guarded by `hostCapabilities.allowInteractions` |
@@ -111,7 +116,7 @@ in "Testing submissions of Power BI custom visuals".
 | Landing page when nothing is bound | **Fixed** - explains what to bind |
 | Localization | **Fixed** - `stringResources` and the host localization manager |
 | Bookmarks | Pass |
-| Sample .pbix embeds the submitted visual version (1180.2.3) | **Fixed** - sample embeds 1.4.0.0, matching `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.4.0.0.pbiviz` |
+| Sample .pbix embeds the submitted visual version (1180.2.3) | **Fixed** - sample embeds 1.5.0.0, matching `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.5.0.0.pbiviz` |
 | No external services; `privileges: []` | Pass - certification audit reports no external requests |
 
 `pbiviz package --certification-audit` reports no external requests. It also lists 9
@@ -131,26 +136,28 @@ configuration" test and makes any listing claim about it false.
 **Newly added because nothing existed behind them:** a font family picker, independent colours for the value, caption and subtitle, and independent font sizes for the caption, subtitle and delta badge - each was previously
 hardcoded in `style/visual.less`.
 
-All 24 declared properties are now returned from `getFormattingModel`, and a unit test
+All 25 declared properties are now returned from `getFormattingModel`, and a unit test
 asserts that, so it cannot regress silently.
 
 ## Current state (28 August 2026)
 
-**1.4.0.0 built and ready; not yet resubmitted.** It answers the 27 August review's
-blocking 1180.2.2 finding with explicitly styled, always-rendered scrollbars (see the
-findings section above).
+**1.5.0.0 built and ready; not yet resubmitted.** It answers the 27 August review's
+blocking 1180.2.2 finding with explicitly styled, always-rendered scrollbars, clears the
+1180.2.2.3 soft failure with the optional Cross-filter field bucket, and adds a Wrap text
+toggle (Format pane > Layout) that wraps long content instead of scrolling sideways (see
+the findings section above and CHANGELOG.md).
 
 **To upload, together, on the Technical configuration page:**
-`dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.4.0.0.pbiviz` and
+`dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.5.0.0.pbiviz` and
 `store/accent-kpi-card-sample.pbix`, with the reviewer notes from `store/listing.md`
 pasted into Notes for certification on Review and publish.
 
-**Sample file:** the two embedded visual parts were replaced in place with the 1.4.0.0
+**Sample file:** the two embedded visual parts were replaced in place with the 1.5.0.0
 build (the surgical zip-part method; entry order preserved). Open it once in Power BI
 Desktop to confirm it renders before uploading. The model is import-mode with inline
 sample data, so it opens offline with no data sources, connectors or credentials.
 
-**Verified at this version:** npm audit 0 vulnerabilities; ESLint clean; 48 tests passing
+**Verified at this version:** npm audit 0 vulnerabilities; ESLint clean; 52 tests passing
 at 98% statement coverage; `pbiviz package --certification-audit` reports no external
 requests. It also lists 9 optional features - the informational extras described above,
 not failures.

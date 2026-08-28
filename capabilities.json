@@ -17,6 +17,13 @@
             "name": "subtitle",
             "kind": "Measure",
             "displayNameKey": "subtitle"
+        },
+        {
+            "displayName": "Cross-filter field",
+            "name": "filterField",
+            "kind": "Grouping",
+            "displayNameKey": "filterField",
+            "description": "Optional. Bind the field this card represents (e.g. a region or KPI name); clicking the card then cross-filters the page by it."
         }
     ],
     "objects": {
@@ -226,6 +233,11 @@
                     "type": {
                         "numeric": true
                     }
+                },
+                "wrapText": {
+                    "type": {
+                        "bool": true
+                    }
                 }
             }
         }
@@ -242,10 +254,23 @@
                     },
                     "subtitle": {
                         "max": 1
+                    },
+                    "filterField": {
+                        "max": 1
                     }
                 }
             ],
             "categorical": {
+                "categories": {
+                    "for": {
+                        "in": "filterField"
+                    },
+                    "dataReductionAlgorithm": {
+                        "top": {
+                            "count": 1
+                        }
+                    }
+                },
                 "values": {
                     "select": [
                         {

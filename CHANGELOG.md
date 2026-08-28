@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.5.0.0 (2026-08-28)
+
+Real outward filtering and a wrap-instead-of-scroll option.
+
+- **Cross-filter field (new optional bucket).** A measure-only card has no data identity,
+  so clicking it could never filter other visuals (the 1180.2.2.3 soft failure). Bind the
+  field the card represents - a region, a KPI name - and clicking the card now selects that
+  field's value and cross-filters the page; clicking again clears it, Ctrl+click adds to a
+  selection. The mapping reduces the field to one row (top 1), so the measures still arrive
+  exactly as before. When no caption is set, the card labels itself with the bound value.
+- **Wrap text (Format pane > Layout).** Off by default (the card scrolls, as certified).
+  Turned on, long values, captions, subtitles and the delta badge break onto further lines
+  instead of scrolling sideways. Vertical scrolling still applies when the wrapped content
+  is taller than the visual, so nothing becomes unreachable.
+
 ## 1.4.0.0 (2026-08-28)
 
 Makes the scroll behaviour *visible*. The certification review of 27 August 2026 failed the
