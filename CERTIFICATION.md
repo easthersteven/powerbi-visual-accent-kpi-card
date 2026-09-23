@@ -6,7 +6,9 @@
 **Review completed:** 25 August 2026 - **Attention needed, resubmission required**
 **Resubmitted:** 27 August 2026 (v1.3.0.0)
 **Review completed:** 27 August 2026 - **Attention needed, resubmission required**
-**Fix ready:** 28 August 2026 (v1.5.0.0) - not yet resubmitted
+**Resubmitted:** v1.5.0.0 - awaiting review outcome
+
+**Fix ready:** 23 September 2026 (v1.6.0.0) - not yet submitted
 
 ## Findings - review of 27 August 2026 (v1.3.0.0)
 
@@ -132,7 +134,7 @@ in "Testing submissions of Power BI custom visuals".
 | Landing page when nothing is bound | **Fixed** - explains what to bind |
 | Localization | **Fixed** - `stringResources` and the host localization manager |
 | Bookmarks | Pass |
-| Sample .pbix embeds the submitted visual version (1180.2.3) | **Fixed** - sample embeds 1.5.0.0, matching `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.5.0.0.pbiviz` |
+| Sample .pbix embeds the submitted visual version (1180.2.3) | **Fixed** - sample embeds 1.6.0.0, matching `dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.6.0.0.pbiviz` |
 | No external services; `privileges: []` | Pass - certification audit reports no external requests |
 
 `pbiviz package --certification-audit` reports no external requests. It also lists 9
@@ -157,31 +159,31 @@ asserts that, so it cannot regress silently.
 
 ## Current state (23 September 2026)
 
-**1.5.0.0 built and ready; not yet resubmitted.** On 23 September it also gained the no-rows
+**1.5.0.0 was submitted for review; 1.6.0.0 is built ahead on `main`, not submitted.** 1.6.0.0 carries the no-rows
 fix: with a measure bound and the filter context returning no rows (a month with no data yet)
 the card showed its landing page instead of the configured Value when empty; bound fields are
 now read from `metadata.columns`, so the empty default renders. Sample .pbix re-embeds the
-rebuilt package (byte-identical to `dist/`). It answers the 27 August review's
+1.6.0.0 package (byte-identical to `dist/`). 1.5.0.0 answers the 27 August review's
 blocking 1180.2.2 finding with explicitly styled, always-rendered scrollbars, clears the
 1180.2.2.3 soft failure with the optional Cross-filter field bucket, and adds a Wrap text
 toggle (Format pane > Layout) that wraps long content instead of scrolling sideways (see
 the findings section above and CHANGELOG.md).
 
 **To upload, together, on the Technical configuration page:**
-`dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.5.0.0.pbiviz` and
+`dist/accentKpiCardA5954A8F7A18431E8E2729CD89ED8F8E.1.6.0.0.pbiviz` and
 `store/accent-kpi-card-sample.pbix`, with the reviewer notes from `store/listing.md`
 pasted into Notes for certification on Review and publish.
 
 **Sample file - Desktop re-save REQUIRED before upload:** the PBIP project now carries
 the outward-filtering demo (a fifth card binding Month to the Cross-filter field bucket
 beside a native column chart), and report bindings cannot be patched into the .pbix by
-hand. Open `store/accent-kpi-card-sample.pbip` in Desktop, import the 1.5.0.0 `.pbiviz`,
+hand. Open `store/accent-kpi-card-sample.pbip` in Desktop, import the 1.6.0.0 `.pbiviz`,
 verify the month card cross-filters the chart, and Save As over
 `store/accent-kpi-card-sample.pbix`. Until that save, the committed .pbix embeds the
 right visual build but still shows the old four-card page. The model is import-mode with
 inline sample data, so it opens offline with no data sources, connectors or credentials.
 
-**Verified at this version (23 September 2026):** npm audit 0 vulnerabilities; ESLint clean; 59 tests passing
+**Verified at 1.6.0.0 (23 September 2026):** npm audit 0 vulnerabilities; ESLint clean; 59 tests passing
 at 98% statement coverage; `pbiviz package --certification-audit` reports no external
 requests. It also lists 9 optional features - the informational extras described above,
 not failures.
