@@ -1,6 +1,20 @@
 {
-  "compatibilityLevel": 1550,
+  "compatibilityLevel": 1600,
   "model": {
+    "annotations": [
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"Sales\"]"
+      },
+      {
+        "name": "__PBI_TimeIntelligenceEnabled",
+        "value": "0"
+      },
+      {
+        "name": "PBI_ProTooling",
+        "value": "[\"DevMode\"]"
+      }
+    ],
     "culture": "en-GB",
     "dataAccessOptions": {
       "legacyRedirects": true,
@@ -11,120 +25,147 @@
     "tables": [
       {
         "name": "Sales",
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ],
         "columns": [
           {
             "name": "Month",
-            "dataType": "string",
-            "sourceColumn": "Month",
-            "sortByColumn": "MonthNo",
-            "summarizeBy": "none",
-            "isHidden": false,
             "annotations": [
               {
                 "name": "SummarizationSetBy",
                 "value": "Automatic"
               }
-            ]
+            ],
+            "dataType": "string",
+            "lineageTag": "a750102a-1f92-48dd-a4be-84d186eb8550",
+            "sortByColumn": "MonthNo",
+            "sourceColumn": "Month",
+            "summarizeBy": "none"
           },
           {
             "name": "MonthNo",
-            "dataType": "int64",
-            "sourceColumn": "MonthNo",
-            "summarizeBy": "none",
-            "isHidden": false,
             "annotations": [
               {
                 "name": "SummarizationSetBy",
                 "value": "Automatic"
               }
-            ]
+            ],
+            "dataType": "int64",
+            "lineageTag": "30c51145-1624-4d36-ae22-ec0814ebc639",
+            "sourceColumn": "MonthNo",
+            "summarizeBy": "none"
           },
           {
             "name": "RevenueValue",
-            "dataType": "double",
-            "sourceColumn": "RevenueValue",
-            "summarizeBy": "none",
-            "isHidden": false,
             "annotations": [
               {
                 "name": "SummarizationSetBy",
                 "value": "Automatic"
               }
-            ]
+            ],
+            "dataType": "double",
+            "lineageTag": "1d6c192f-f792-4e41-82e7-1705541a9170",
+            "sourceColumn": "RevenueValue",
+            "summarizeBy": "none"
           },
           {
             "name": "TicketsValue",
-            "dataType": "int64",
-            "sourceColumn": "TicketsValue",
-            "summarizeBy": "none",
-            "isHidden": false,
             "annotations": [
               {
                 "name": "SummarizationSetBy",
                 "value": "Automatic"
               }
-            ]
+            ],
+            "dataType": "int64",
+            "lineageTag": "7713c559-c87d-4c59-82e2-06942ddc7bfd",
+            "sourceColumn": "TicketsValue",
+            "summarizeBy": "none"
           },
           {
             "name": "OnTimeValue",
-            "dataType": "double",
-            "sourceColumn": "OnTimeValue",
-            "summarizeBy": "none",
-            "isHidden": false,
             "annotations": [
               {
                 "name": "SummarizationSetBy",
                 "value": "Automatic"
               }
-            ]
+            ],
+            "dataType": "double",
+            "lineageTag": "f45bca0e-2951-485f-befc-c1b9e800956d",
+            "sourceColumn": "OnTimeValue",
+            "summarizeBy": "none"
           }
         ],
+        "lineageTag": "b30fd490-6798-4ad3-ad8a-d2cf2c2b35b8",
         "measures": [
           {
             "name": "Revenue",
             "expression": "SUM('Sales'[RevenueValue])",
-            "formatString": "#,0"
+            "formatString": "#,0",
+            "lineageTag": "42361bbd-0e76-40b5-b4a6-702ec1833161"
           },
           {
             "name": "Revenue change",
-            "expression": "VAR cur = CALCULATE ( SUM ( 'Sales'[RevenueValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )\nVAR prev = CALCULATE ( SUM ( 'Sales'[RevenueValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )\nRETURN DIVIDE ( cur - prev, prev )",
-            "formatString": "0.0%"
+            "expression": [
+              "VAR cur = CALCULATE ( SUM ( 'Sales'[RevenueValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )",
+              "VAR prev = CALCULATE ( SUM ( 'Sales'[RevenueValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )",
+              "RETURN DIVIDE ( cur - prev, prev )"
+            ],
+            "formatString": "0.0%",
+            "lineageTag": "f82e102a-06c3-4dc2-a13c-48a9c6f690ee"
           },
           {
             "name": "Open tickets",
             "expression": "CALCULATE ( SUM ( 'Sales'[TicketsValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )",
-            "formatString": "#,0"
+            "formatString": "#,0",
+            "lineageTag": "91934a15-db07-45f8-9eb6-54a4513be1ca"
           },
           {
             "name": "Tickets change",
-            "expression": "CALCULATE ( SUM ( 'Sales'[TicketsValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )\n    - CALCULATE ( SUM ( 'Sales'[TicketsValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )",
-            "formatString": "#,0"
+            "expression": [
+              "CALCULATE ( SUM ( 'Sales'[TicketsValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )",
+              "    - CALCULATE ( SUM ( 'Sales'[TicketsValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )"
+            ],
+            "formatString": "#,0",
+            "lineageTag": "94f32722-d89f-4628-8433-ed7cb95c4132"
           },
           {
             "name": "On time",
             "expression": "CALCULATE ( AVERAGE ( 'Sales'[OnTimeValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )",
-            "formatString": "0.0%"
+            "formatString": "0.0%",
+            "lineageTag": "f0f37400-8042-4d60-976a-d68e49155b9c"
           },
           {
             "name": "On time change",
-            "expression": "CALCULATE ( AVERAGE ( 'Sales'[OnTimeValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )\n    - CALCULATE ( AVERAGE ( 'Sales'[OnTimeValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )",
-            "formatString": "0.0%"
+            "expression": [
+              "CALCULATE ( AVERAGE ( 'Sales'[OnTimeValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) )",
+              "    - CALCULATE ( AVERAGE ( 'Sales'[OnTimeValue] ), 'Sales'[MonthNo] = MAX ( 'Sales'[MonthNo] ) - 1 )"
+            ],
+            "formatString": "0.0%",
+            "lineageTag": "c36abea8-c43f-4367-a1e7-2ed44550321f"
           },
           {
             "name": "Overdue actions",
-            "expression": "BLANK()"
+            "expression": "BLANK()",
+            "lineageTag": "94184329-5379-469f-b152-dc4462d6e6ac"
           },
           {
             "name": "YTD",
-            "expression": "\"YTD\""
+            "expression": "\"YTD\"",
+            "lineageTag": "33bcbd06-c9f0-4c39-bf79-0062132dd360"
           },
           {
             "name": "This week",
-            "expression": "\"this week\""
+            "expression": "\"this week\"",
+            "lineageTag": "f31b5a0d-0961-441c-a4d1-0aece2b504f7"
           },
           {
             "name": "This month",
-            "expression": "\"this month\""
+            "expression": "\"this month\"",
+            "lineageTag": "d891a845-2377-418a-af2b-c3d56929d3d9"
           }
         ],
         "partitions": [
@@ -132,34 +173,17 @@
             "name": "Sales",
             "mode": "import",
             "source": {
-              "type": "m",
               "expression": [
                 "let",
                 "    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"Tc3RDcAgCATQXfi2DSKgztK4/xrlgiZ+nCHkcX4fCYs/3KgQIs2ZOQaTePidVmmVozR2iCin0r7VuJThPLsCQmkqn5fy2CEyTtdM1e1S6Edk1u5Qbf/oSmv9\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Month = _t, MonthNo = _t, RevenueValue = _t, TicketsValue = _t, OnTimeValue = _t]),",
                 "    #\"Changed Type\" = Table.TransformColumnTypes(Source,{{\"Month\", type text}, {\"MonthNo\", Int64.Type}, {\"RevenueValue\", type number}, {\"TicketsValue\", Int64.Type}, {\"OnTimeValue\", type number}})",
                 "in",
                 "    #\"Changed Type\""
-              ]
+              ],
+              "type": "m"
             }
           }
-        ],
-        "annotations": [
-          {
-            "name": "PBI_ResultType",
-            "value": "Table"
-          }
         ]
-      }
-    ],
-    "relationships": [],
-    "annotations": [
-      {
-        "name": "PBI_QueryOrder",
-        "value": "[\"Sales\"]"
-      },
-      {
-        "name": "__PBI_TimeIntelligenceEnabled",
-        "value": "0"
       }
     ]
   }
