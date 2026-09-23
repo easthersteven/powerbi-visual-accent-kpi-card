@@ -51,7 +51,24 @@ npm install
 npm run package
 ```
 
-The packaged visual is written to `dist/*.pbiviz` and can be imported into Power BI Desktop or the Power BI service.
+The packaged visual is written to `dist/*.pbiviz` and can be imported into Power BI Desktop or the Power BI service. Package the build you submit with `npx pbiviz package --certification-audit`; a plain package minifies differently and will not match the sample.
+
+### Testing a new build in Power BI Desktop
+
+Once a visual is published, Power BI loads that GUID from AppSource and silently replaces any
+package imported from a file, so importing a newer `.pbiviz` still shows the AppSource version
+in About. To try a build before it is published, package it under a throwaway GUID and import
+that instead:
+
+```
+sed -i 's/"guid": "accentKpiCardA5954/"guid": "accentKpiCardDEVA5954/' pbiviz.json
+npx pbiviz package && git checkout pbiviz.json
+mkdir -p dist-dev && mv dist/accentKpiCardDEV*.pbiviz dist-dev/
+```
+
+Import the file from `dist-dev/`. It appears as a separate visual in the Visualizations pane and
+is never swapped for the AppSource copy. The sample report for certification must keep the real
+GUID.
 
 For development with live reload:
 

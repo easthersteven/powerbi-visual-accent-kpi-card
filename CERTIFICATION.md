@@ -6,7 +6,7 @@
 **Review completed:** 25 August 2026 - **Attention needed, resubmission required**
 **Resubmitted:** 27 August 2026 (v1.3.0.0)
 **Review completed:** 27 August 2026 - **Attention needed, resubmission required**
-**Resubmitted:** v1.5.0.0 - awaiting review outcome
+**Resubmitted:** v1.5.0.0 - live on AppSource (CDN-verified 23 September 2026)
 
 **Fix ready:** 23 September 2026 (v1.6.0.0) - not yet submitted
 
@@ -159,7 +159,12 @@ asserts that, so it cannot regress silently.
 
 ## Current state (23 September 2026)
 
-**1.5.0.0 was submitted for review; 1.6.0.0 is built ahead on `main`, not submitted.** 1.6.0.0 carries the no-rows
+**1.5.0.0 is live on AppSource** (Desktop's WebView2 cache fetches
+`https://pbivisuals.powerbi.com/<guid>.1.5.0.0.<hash>.pbiviz.json` for this GUID, verified 23 September
+2026). **1.6.0.0 is built ahead on `main`, not submitted.** Because the GUID is published, Desktop loads
+the AppSource copy and ignores the package embedded in a report, so About reads 1.5.0.0 even though the
+sample embeds 1.6.0.0; verify the sample by reading the .pbix, and test builds via `dist-dev/` (README,
+"Testing a new build"). 1.6.0.0 carries the no-rows
 fix: with a measure bound and the filter context returning no rows (a month with no data yet)
 the card showed its landing page instead of the configured Value when empty; bound fields are
 now read from `metadata.columns`, so the empty default renders. Sample .pbix re-embeds the

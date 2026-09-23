@@ -60,7 +60,7 @@ Ideal for KPI strips across the top of a dashboard where consistency, crisp text
 
 ```text
 Accent KPI Card 1.6.0.0 - Product ID e569891a-3a03-4a79-b794-2f5d6670819a
-Supersedes 1.5.0.0, submitted for review.
+Supersedes 1.5.0.0, which is the version AppSource currently serves for this GUID (verified 23 September 2026 against pbivisuals.powerbi.com).
 
 SOURCE AND BUILD
 Repository: https://github.com/easthersteven/powerbi-visual-accent-kpi-card
@@ -76,7 +76,7 @@ RESPONSE TO THE REVIEW OF 27 AUGUST 2026
 NEW IN 1.6.0.0
 Value when empty now also covers a filter context with no rows. When the page is filtered to a period that has no data yet, the host delivers empty value columns rather than a blank value; the card used to fall through to its landing page ("Add a measure to the Value field") instead of showing the configured default. What is bound is now read from the data view's metadata columns, which list the buckets whether or not rows came back, so the card shows the configured default ("0" by default, formatted to the value format) with its caption; the landing page is reserved for a card with nothing bound. No new data access, privileges or external requests.
 
-CARRIED OVER FROM 1.5.0.0 (submitted for review)
+INCLUDED SINCE 1.5.0.0 (live on AppSource)
 Wrap text (Format pane, Layout): off by default the card scrolls as certified; turned on, long values, captions, subtitles and the delta badge wrap onto further lines instead of scrolling sideways, with vertical scrolling still available so nothing becomes unreachable. When no caption is set and the Cross-filter field is bound, the card labels itself with the bound value. Tooltips also show from a tap on touch devices, and removing the bound data clears the tooltip and selection state along with the card.
 
 CARRIED OVER FROM 1.3.0.0 (passed 27 August 2026)
