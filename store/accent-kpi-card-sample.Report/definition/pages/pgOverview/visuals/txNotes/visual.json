@@ -3,10 +3,10 @@
   "name": "txNotes",
   "position": {
     "x": 40,
-    "y": 580,
+    "y": 544,
     "z": 0,
     "width": 1200,
-    "height": 130,
+    "height": 160,
     "tabOrder": 0
   },
   "visual": {
@@ -42,7 +42,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "A delta that reads differently from the value - the revenue card shows a percentage change on a currency value. Format pane > Delta badge > Delta format > Percent change (%).",
+                    "value": "A delta that reads differently from the value - the revenue card shows a percentage change on a currency value. Set deltaFormat to percentChange.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"
@@ -75,7 +75,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Value when empty - the last card is bound to a measure returning BLANK(). Instead of an empty card it shows the configured default, formatted like a real value.",
+                    "value": "Value when empty - the Overdue actions card is bound to a measure returning BLANK(), and the 2026-09 card is filtered to a month with no rows at all. Both show the configured default, formatted like a real value, instead of an empty card or the landing page.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"
@@ -86,7 +86,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Cross-filtering - the bottom-left card binds Month to the Cross-filter field bucket, so it labels itself with the month and clicking it filters the column chart beside it. Click again to clear.",
+                    "value": "Cross-filter - click the Month card to filter the chart; click again to clear.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"

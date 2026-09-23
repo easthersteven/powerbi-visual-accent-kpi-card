@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
   "name": "ncByMonth",
   "position": {
-    "x": 344,
-    "y": 396,
+    "x": 648,
+    "y": 380,
     "z": 0,
-    "height": 168,
-    "width": 896,
+    "width": 592,
+    "height": 150,
     "tabOrder": 0
   },
   "visual": {
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "Sales.Month",
-              "nativeQueryRef": "Month",
-              "active": true
+              "nativeQueryRef": "Month"
             }
           ]
         },
@@ -64,21 +63,6 @@
                       "Value": "'#1F908C'"
                     }
                   }
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    "visualContainerObjects": {
-      "title": [
-        {
-          "properties": {
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Revenue by month - click the month card to cross-filter this chart'"
                 }
               }
             }

@@ -3,10 +3,10 @@
   "name": "txCaption",
   "position": {
     "x": 40,
-    "y": 340,
+    "y": 332,
     "z": 0,
     "width": 1200,
-    "height": 44,
+    "height": 40,
     "tabOrder": 0
   },
   "visual": {
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Accent bar, formatted value, subtitle, direction-aware delta badge, and a configurable default when the measure is blank (shown right: \"Value when empty\" = 0).",
+                    "value": "Below: a card bound to Month in the Cross-filter field (click it to filter the chart), a card filtered to a month with no rows yet (it shows the Value when empty default, 0, not an empty card), and a native chart that responds to the clicks.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#333333"
