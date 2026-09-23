@@ -10,7 +10,7 @@ A Power BI custom visual: a compact KPI card with a coloured accent bar, a forma
 - Optional caption above the value.
 - Delta badge with an up or down arrow, coloured by whether the movement is good or bad for the metric ("Up is good", "Down is good", or "Neutral"). Percent deltas are shown in percentage points ("pp").
 - Non-numeric delta text renders as a neutral badge.
-- Configurable no-data default (Format pane, "No data" card): when the main measure returns blank, the card shows this value instead of an empty card. The default is "0" and numeric defaults are formatted like real values ("0" renders as "0.0%" in percent mode). Any other text (such as "n/a") is shown as-is.
+- Configurable no-data default (Format pane, "No data" card): when the main measure returns blank, or the current filter context has no rows at all (a month with no data yet), the card shows this value instead of an empty card. The default is "0" and numeric defaults are formatted like real values ("0" renders as "0.0%" in percent mode). Any other text (such as "n/a") is shown as-is.
 - Header mode: renders only the caption as a text header with configurable size, colour, and background.
 - Format pane controls for value font size and all indicator colours.
 - Rendering Events API support and context menu support (right-click).

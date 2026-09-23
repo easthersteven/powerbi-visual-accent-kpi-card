@@ -57,7 +57,10 @@ function dataView({ main, delta, subtitle, category, objects } = {}) {
     if (category !== undefined) {
         categorical.categories = [{ source: { roles: { filterField: true }, queryName: "Geo.Region", displayName: "Region" }, values: [category] }];
     }
-    return { metadata: { objects }, categorical };
+    // metadata.columns mirrors what the host sends: every bound field, rows or not.
+    const columns = values.map((v) => ({ roles: v.source.roles, queryName: v.source.queryName, displayName: v.source.displayName }));
+    if (category !== undefined) columns.push({ roles: { filterField: true }, queryName: "Geo.Region", displayName: "Region" });
+    return { metadata: { objects, columns }, categorical };
 }
 
 test("renders a percent-formatted value with caption and a good delta badge", () => {
@@ -361,4 +364,49 @@ test("respects Edit interactions being turned off", async () => {
     element.dispatchEvent(new dom.window.MouseEvent("click"));
     await new Promise((r) => setTimeout(r, 0));
     assert.equal(captured.selected.length, 0, "clicking must not filter when interactions are off");
+});
+
+
+// ---- No rows in the filter context -----------------------------------------------------
+
+// When a slicer or the report's date range leaves the measure with no rows (the current
+// month has no data yet), the host still lists the bound fields in metadata.columns but
+// delivers empty value columns. That is "no data", not "nothing bound".
+function emptyRowsDataView(objects, { withCategory = false, dropCategorical = false } = {}) {
+    const columns = [{ roles: { mainValue: true }, queryName: "Sales.Revenue", displayName: "Revenue" }];
+    if (withCategory) columns.push({ roles: { filterField: true }, queryName: "Time.Month", displayName: "Month" });
+    const categorical = dropCategorical ? undefined : {
+        categories: withCategory ? [{ source: { roles: { filterField: true }, queryName: "Time.Month", displayName: "Month" }, values: [] }] : undefined,
+        values: []
+    };
+    return { metadata: { objects, columns }, categorical };
+}
+
+test("shows the empty default, not the landing page, when the measure is bound but has no rows", () => {
+    const { visual, element } = makeVisual();
+    const objects = { cardStyle: { caption: "Attendance", valueFormat: "percent" } };
+    visual.update({ dataViews: [emptyRowsDataView(objects)] });
+    assert.equal(element.querySelector(".kpi-landing-title"), null, "landing page must not render");
+    assert.equal(element.querySelector(".kpi-value").textContent, "0.0%");
+    assert.equal(element.querySelector(".kpi-caption").textContent, "Attendance");
+});
+
+test("no rows with a cross-filter field bound still shows the empty default", () => {
+    const { visual, element, captured } = makeVisual();
+    visual.update({ dataViews: [emptyRowsDataView({ cardStyle: { emptyDefault: "0" } }, { withCategory: true })] });
+    assert.equal(element.querySelector(".kpi-value").textContent, "0");
+    assert.equal(element.querySelector(".kpi-delta"), null, "no delta badge without a delta");
+    assert.deepEqual(captured.events, ["started", "finished"]);
+});
+
+test("no rows with the categorical block missing entirely still shows the empty default", () => {
+    const { visual, element } = makeVisual();
+    visual.update({ dataViews: [emptyRowsDataView({ cardStyle: { emptyDefault: "n/a" } }, { dropCategorical: true })] });
+    assert.equal(element.querySelector(".kpi-value").textContent, "n/a");
+});
+
+test("the landing page still renders when nothing is bound", () => {
+    const { visual, element } = makeVisual();
+    visual.update({ dataViews: [{ metadata: { columns: [] }, categorical: { values: [] } }] });
+    assert.ok(element.querySelector(".kpi-landing-title"));
 });

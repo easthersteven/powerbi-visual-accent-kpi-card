@@ -155,9 +155,13 @@ hardcoded in `style/visual.less`.
 All 25 declared properties are now returned from `getFormattingModel`, and a unit test
 asserts that, so it cannot regress silently.
 
-## Current state (28 August 2026)
+## Current state (23 September 2026)
 
-**1.5.0.0 built and ready; not yet resubmitted.** It answers the 27 August review's
+**1.5.0.0 built and ready; not yet resubmitted.** On 23 September it also gained the no-rows
+fix: with a measure bound and the filter context returning no rows (a month with no data yet)
+the card showed its landing page instead of the configured Value when empty; bound fields are
+now read from `metadata.columns`, so the empty default renders. Sample .pbix re-embeds the
+rebuilt package (byte-identical to `dist/`). It answers the 27 August review's
 blocking 1180.2.2 finding with explicitly styled, always-rendered scrollbars, clears the
 1180.2.2.3 soft failure with the optional Cross-filter field bucket, and adds a Wrap text
 toggle (Format pane > Layout) that wraps long content instead of scrolling sideways (see
@@ -177,7 +181,7 @@ verify the month card cross-filters the chart, and Save As over
 right visual build but still shows the old four-card page. The model is import-mode with
 inline sample data, so it opens offline with no data sources, connectors or credentials.
 
-**Verified at this version:** npm audit 0 vulnerabilities; ESLint clean; 54 tests passing
+**Verified at this version (23 September 2026):** npm audit 0 vulnerabilities; ESLint clean; 59 tests passing
 at 98% statement coverage; `pbiviz package --certification-audit` reports no external
 requests. It also lists 9 optional features - the informational extras described above,
 not failures.

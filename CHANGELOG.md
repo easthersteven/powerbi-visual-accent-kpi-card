@@ -1,10 +1,18 @@
 # Changelog
 
-## 1.5.0.0 (2026-08-28)
+## 1.5.0.0 (2026-08-28, updated 2026-09-23)
 
 Real outward filtering, a wrap-instead-of-scroll option, and fixes from a full
 certification re-audit.
 
+- **Value when empty now shows when the filter context has no rows.** (Added 23 Sep 2026.)
+  With a measure bound and the page filtered to a period that has no data yet - the last
+  few months of a report whose source lags - the host delivers empty value columns rather
+  than a blank value, and the card fell through to the landing page ("Add a measure to the
+  Value field") instead of showing the configured default. What is bound is now read from
+  `metadata.columns`, which lists the buckets whether or not rows came back, so the card
+  renders the empty default ("0" by default, formatted to the value format) with its
+  caption. The landing page is reserved for a card with nothing bound.
 - **Scrolling now actually works inside Power BI Desktop.** The Desktop sandbox styles
   the element the visual renders into with `body.visual-sandbox #sandbox-host
   { overflow: hidden }` - an ID selector that outweighs the stylesheet's class rule, so

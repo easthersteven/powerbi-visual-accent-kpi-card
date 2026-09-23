@@ -134,17 +134,25 @@ export class Visual implements IVisual {
             this.target.onpointerdown = null;
 
             const dv: DataView = options.dataViews?.[0];
-            if (!dv?.categorical?.values?.length) {
+            // What is BOUND comes from metadata.columns, which lists every field in the buckets
+            // even when the filter context returns no rows (the current month has no data yet,
+            // a slicer selects an empty period). In that case the host delivers empty value
+            // columns - or no categorical block at all - and the card must show the configured
+            // empty default, not the landing page. The landing page is only for nothing bound.
+            const metaCols = dv?.metadata?.columns ?? [];
+            const boundInMeta = metaCols.some((c) => c.roles && Object.keys(c.roles).length > 0);
+            const vals: powerbi.DataViewValueColumn[] = dv?.categorical?.values ? [...dv.categorical.values] : [];
+            if (!dv || (!vals.length && !boundInMeta)) {
                 this.target.classList.remove("selected");
                 this.renderLandingPage();
                 this.events.renderingFinished(options);
                 return;
             }
+            const hasMain = metaCols.some((c) => c.roles?.["mainValue"]) || vals.some((col) => col.source.roles?.["mainValue"]);
 
-            const vals = dv.categorical.values;
             // Optional cross-filter field: the mapping reduces it to one row (top 1), and its
             // value gives the card a real data identity so clicking can filter the page.
-            const cat = dv.categorical.categories?.[0];
+            const cat = dv.categorical?.categories?.[0];
             const catValue = cat && cat.values?.length ? cat.values[0] : undefined;
             let mainVal: powerbi.PrimitiveValue = null;
             let deltaVal: powerbi.PrimitiveValue = null;
@@ -215,7 +223,6 @@ export class Visual implements IVisual {
             // NO DATA: when the main measure is bound but returns blank (e.g. no rows for the
             // current period), show the configurable default (a numeric default is formatted
             // like a real value, so "0" renders as "0.0%" in percent mode).
-            const hasMain = [...vals].some((col) => col.source.roles?.["mainValue"]);
             const formattedValue = mainVal == null && hasMain
                 ? resolveEmptyDefault(s.emptyDefault, s.valueFormat, this.locale, fmtOpts)
                 : formatMainValue(mainVal, s.valueFormat, this.locale, fmtOpts);

@@ -74,6 +74,8 @@ RESPONSE TO THE REVIEW OF 27 AUGUST 2026
 1180.2.2.3 filter out (soft) - fixed. A new optional Cross-filter field bucket gives the card a data identity: bind the field the card represents (e.g. a region or KPI name) and clicking the card selects that value and cross-filters the page; clicking again clears it and Ctrl+click adds to a selection. The selected card is outlined, activation works with Enter/Space, the report's Edit interactions setting is honoured, and selection made elsewhere is reflected back through registerOnSelectCallback. Without the bucket the card is measures-only and has no data-point identity to filter by.
 
 NEW IN 1.5.0.0
+Value when empty now also covers a filter context with no rows. When the page is filtered to a period that has no data yet, the host delivers empty value columns rather than a blank value; the card used to fall through to its landing page ("Add a measure to the Value field") instead of showing the configured default. What is bound is now read from the data view's metadata columns, which list the buckets whether or not rows came back, so the card shows the configured default ("0" by default, formatted to the value format) with its caption; the landing page is reserved for a card with nothing bound. No new data access, privileges or external requests.
+
 Wrap text (Format pane, Layout): off by default the card scrolls as certified; turned on, long values, captions, subtitles and the delta badge wrap onto further lines instead of scrolling sideways, with vertical scrolling still available so nothing becomes unreachable. When no caption is set and the Cross-filter field is bound, the card labels itself with the bound value. Tooltips also show from a tap on touch devices, and removing the bound data clears the tooltip and selection state along with the card.
 
 CARRIED OVER FROM 1.3.0.0 (passed 27 August 2026)
@@ -83,14 +85,14 @@ HOST BEHAVIOUR AND ACCESSIBILITY
 High contrast mode takes every colour from the host palette. The card is focusable and Enter or Space activates it; supportsKeyboardFocus is declared. Honours the report's Edit interactions setting. Shows the highlighted figure when another visual highlights a subset (supportsHighlight). Supports the Rendering Events API and context menus. Strings are localised through stringResources and the host localization manager, and a landing page explains the visual when nothing is bound.
 
 SECURITY AND PRIVACY
-No external services and no network calls of any kind; no data leaves the report. capabilities.json declares "privileges": []. pbiviz package --certification-audit reports no external requests. npm audit reports 0 vulnerabilities. 54 unit tests pass.
+No external services and no network calls of any kind; no data leaves the report. capabilities.json declares "privileges": []. pbiviz package --certification-audit reports no external requests. npm audit reports 0 vulnerabilities. 59 unit tests pass.
 
 SAMPLE FILE
 accent-kpi-card-sample.pbix opens offline: the model is import-mode with inline sample data, with no data sources, connectors or credentials. It embeds visual version 1.5.0.0, matching the submitted .pbiviz. Page 1 shows four cards across the top, left to right: a currency value in compact notation (AUD) with a percentage-change delta, a down-is-good metric (open tickets), a percentage whose delta reads in percentage points, and a card whose measure returns BLANK() to demonstrate the configurable empty value. Below them, a fifth card binds Month to the Cross-filter field bucket (it labels itself with the month) next to a native column chart: clicking that card cross-filters the chart, demonstrating outward filtering (1180.2.2.3); clicking again clears it. Page 2 documents the settings.
 ```
 
-**Pre-publish checks - passed 28 Aug 2026 (v1.5.0.0), resubmission pending:** npm audit 0
-vulnerabilities; eslint clean; 54 unit tests pass; certification audit found no external
+**Pre-publish checks - passed 23 Sep 2026 (v1.5.0.0), resubmission pending:** npm audit 0
+vulnerabilities; eslint clean; 59 unit tests pass; certification audit found no external
 requests; logo 300x300 and screenshot 1366x768 within size limits.
 
 **Before resubmitting - the sample .pbix MUST be re-saved from the PBIP:** the sample
