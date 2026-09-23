@@ -161,13 +161,17 @@ asserts that, so it cannot regress silently.
 
 **1.5.0.0 is live on AppSource** (Desktop's WebView2 cache fetches
 `https://pbivisuals.powerbi.com/<guid>.1.5.0.0.<hash>.pbiviz.json` for this GUID, verified 23 September
-2026). **1.6.0.0 is built ahead on `main`, not submitted.** A PBIR report.json lists AppSource visuals under
-`publicCustomVisuals` and file-imported ones as a `resourcePackages` entry of type `CustomVisual`; today's
-Desktop save had recorded this GUID under `publicCustomVisuals`, so Desktop rendered the live 1.5.0.0 and
-About said so while the file embedded 1.6.0.0. The sample .pbix now carries only the `CustomVisual`
-resource package reference (as the August save did), so Desktop renders the embedded 1.6.0.0 build.
-When re-saving from Desktop, remove the visual from the Visualizations pane and import the .pbiviz from
-file before saving. `dist-dev/` holds a throwaway-GUID copy for ad-hoc testing (README, "Testing a new build"). 1.6.0.0 carries the no-rows
+2026). **1.6.0.0 is built ahead on `main`, not submitted.**
+
+**Testing a published GUID.** Per Microsoft's submission-testing page, "Power BI loads the latest
+published version of the visual from AppSource, even if you import the visual from a local file";
+the documented override is Desktop's Developer mode (Options > Current file > Report settings >
+Developer Mode > Turn on developer mode for this session), then import the .pbiviz from file, with
+the GUID unchanged. No file-side arrangement of the sample (embedded package, resourcePackages,
+publicCustomVisuals) changes what Desktop renders; the sample only has to embed the submitted
+version (1180.2.3), which it does. To produce the sample: open the PBIP, turn on Developer mode,
+import `dist/...1.6.0.0.pbiviz`, confirm About reads 1.6.0.0, Save As over `store/accent-kpi-card-sample.pbix`.
+1.6.0.0 carries the no-rows
 fix: with a measure bound and the filter context returning no rows (a month with no data yet)
 the card showed its landing page instead of the configured Value when empty; bound fields are
 now read from `metadata.columns`, so the empty default renders. Sample .pbix re-embeds the

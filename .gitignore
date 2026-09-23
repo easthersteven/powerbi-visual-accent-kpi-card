@@ -15,4 +15,3 @@ nul
 
 # stray temp file from an interrupted sample repack
 store/*.pbix.tmp
-dist-dev/
