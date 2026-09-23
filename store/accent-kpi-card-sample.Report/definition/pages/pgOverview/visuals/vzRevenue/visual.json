@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
   "name": "vzRevenue",
   "position": {
-    "x": 40,
-    "y": 156,
+    "x": 39.76331360946746,
+    "y": 155.26627218934914,
     "z": 0,
-    "width": 288,
-    "height": 168,
+    "height": 168.52071005917162,
+    "width": 272.66272189349115,
     "tabOrder": 0
   },
   "visual": {
@@ -130,5 +130,51 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "17c8db293f0c9f12e799",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Sales"
+              }
+            },
+            "Property": "Revenue"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "0f72f758be3bed64f97d",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Sales"
+              }
+            },
+            "Property": "Revenue change"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "155dfc4cf19d3dae6113",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Sales"
+              }
+            },
+            "Property": "YTD"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }
