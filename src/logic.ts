@@ -167,6 +167,9 @@ export interface CardSettings {
     headerSize: number;
     headerBg: string;
     wrapText: boolean;
+    valueBold: boolean;
+    captionBold: boolean;
+    captionUppercase: boolean;
 }
 
 export const CARD_DEFAULTS: Readonly<CardSettings> = Object.freeze({
@@ -195,6 +198,10 @@ export const CARD_DEFAULTS: Readonly<CardSettings> = Object.freeze({
     headerSize: 14,
     headerBg: "transparent",
     wrapText: false,
+    // bold value, bold capitals caption: the look the card has always had
+    valueBold: true,
+    captionBold: true,
+    captionUppercase: true,
 });
 
 type Raw = Record<string, unknown> | undefined;
@@ -248,6 +255,9 @@ export function readSettings(rawObjects: unknown): CardSettings {
         headerSize: sizeOf(raw, "headerSize", d.headerSize),
         headerBg: colorOf(raw, "headerBg", d.headerBg),
         wrapText: raw?.["wrapText"] === true,
+        valueBold: raw?.["valueBold"] !== false,
+        captionBold: raw?.["captionBold"] !== false,
+        captionUppercase: raw?.["captionUppercase"] !== false,
     };
 }
 

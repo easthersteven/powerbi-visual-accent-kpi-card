@@ -41,6 +41,8 @@ Set via the visual's objects (Format pane and report themes):
 | cardStyle | fontSize | Value font size; caption, subtitle, and delta scale from it. |
 | cardStyle | goodColor / badColor / neutralColor | Delta badge text colours. |
 | cardStyle | headerMode / headerColor / headerSize / headerBg | Header mode and its styling. |
+| cardStyle | valueBold | Value in bold (default on). |
+| cardStyle | captionBold / captionUppercase | Caption in bold and in capitals (both on by default). |
 
 ## Building from source
 

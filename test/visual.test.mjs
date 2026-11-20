@@ -307,6 +307,18 @@ test("wrap text: the Format pane toggle adds the wrap class, and off removes it"
     assert.equal(element.classList.contains("wrap"), false);
 });
 
+test("value bold and caption bold capitals by default; each can be turned off", () => {
+    const { visual, element } = makeVisual();
+    visual.update({ dataViews: [dataView({ main: 42, objects: { cardStyle: { caption: "Revenue" } } })] });
+    assert.equal(element.querySelector(".kpi-value").style.fontWeight, "700");
+    assert.equal(element.querySelector(".kpi-caption").style.fontWeight, "600");
+    assert.equal(element.querySelector(".kpi-caption").style.textTransform, "uppercase");
+    visual.update({ dataViews: [dataView({ main: 42, objects: { cardStyle: { caption: "Revenue", valueBold: false, captionBold: false, captionUppercase: false } } })] });
+    assert.equal(element.querySelector(".kpi-value").style.fontWeight, "400");
+    assert.equal(element.querySelector(".kpi-caption").style.fontWeight, "400");
+    assert.equal(element.querySelector(".kpi-caption").style.textTransform, "none");
+});
+
 test("does not attempt to select when no measure is bound", async () => {
     const { visual, element, captured } = makeVisual();
     visual.update({ dataViews: [{ metadata: {}, categorical: { values: [] } }] });

@@ -250,6 +250,10 @@ export class Visual implements IVisual {
                 const capEl = el("div", "kpi-caption", caption);
                 capEl.style.color = hc ? hcFore : s.captionColor;
                 capEl.style.fontSize = s.captionSize + "px";
+                // weight and capitals switchable (Format pane > Text > Caption), so the card can match a report's own cards
+                capEl.style.fontWeight = s.captionBold ? "600" : "400";
+                capEl.style.textTransform = s.captionUppercase ? "uppercase" : "none";
+                capEl.style.letterSpacing = s.captionUppercase ? "0.3px" : "normal";
                 body.appendChild(capEl);
             }
 
@@ -257,6 +261,7 @@ export class Visual implements IVisual {
             const valEl = el("span", "kpi-value", formattedValue);
             valEl.style.color = hc ? hcFore : s.valueColor;
             valEl.style.fontSize = s.fontSize + "px";
+            valEl.style.fontWeight = s.valueBold ? "700" : "400";
             valueRow.appendChild(valEl);
             if (subtitleVal != null && subtitleVal !== "") {
                 const subEl = el("span", "subtitle-value", String(subtitleVal));
@@ -408,7 +413,8 @@ export class Visual implements IVisual {
                             uid: "kpiValueTextGroup", displayName: "Value",
                             slices: [
                                 this.numSlice("kpiFontSizeSlice", "Font size", "fontSize", s.fontSize, 4, 200, "px"),
-                                this.colorSlice("kpiValueColorSlice", "Colour", "valueColor", s.valueColor)
+                                this.colorSlice("kpiValueColorSlice", "Colour", "valueColor", s.valueColor),
+                                this.toggleSlice("kpiValueBoldSlice", "Bold", "valueBold", s.valueBold)
                             ]
                         },
                         {
@@ -416,7 +422,9 @@ export class Visual implements IVisual {
                             slices: [
                                 this.textSlice("kpiCaptionSlice", "Caption text", "caption", s.caption, "e.g. Revenue"),
                                 this.numSlice("kpiCaptionSizeSlice", "Font size", "captionSize", s.captionSize, 4, 200, "px"),
-                                this.colorSlice("kpiCaptionColorSlice", "Colour", "captionColor", s.captionColor)
+                                this.colorSlice("kpiCaptionColorSlice", "Colour", "captionColor", s.captionColor),
+                                this.toggleSlice("kpiCaptionBoldSlice", "Bold", "captionBold", s.captionBold),
+                                this.toggleSlice("kpiCaptionUpperSlice", "Capitals", "captionUppercase", s.captionUppercase)
                             ]
                         },
                         {

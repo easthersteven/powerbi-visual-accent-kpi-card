@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.7.0.0 (2026-11-20)
+
+Built on main; not yet submitted. Formatting only: with no new settings changed the card looks
+exactly as 1.6.0.0 does.
+
+- **Bold and capitals can be switched off (Format pane > Text).** The value's bold and the
+  caption's bold and capitals were fixed in the stylesheet, so the card could not match a report
+  whose own cards use regular weight and sentence case. Value > Bold, Caption > Bold and
+  Caption > Capitals now switch them; all three are on by default.
+
 ## 1.6.0.0 (2026-09-23)
 
 Built on main; not yet submitted. Supersedes 1.5.0.0, which was submitted for review.

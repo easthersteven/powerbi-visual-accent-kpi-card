@@ -238,6 +238,21 @@
                     "type": {
                         "bool": true
                     }
+                },
+                "valueBold": {
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "captionBold": {
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "captionUppercase": {
+                    "type": {
+                        "bool": true
+                    }
                 }
             }
         }
