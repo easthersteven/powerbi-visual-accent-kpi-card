@@ -43,6 +43,7 @@ Set via the visual's objects (Format pane and report themes):
 | cardStyle | headerMode / headerColor / headerSize / headerBg | Header mode and its styling. |
 | cardStyle | valueBold | Value in bold (default on). |
 | cardStyle | captionBold / captionUppercase | Caption in bold and in capitals (both on by default). |
+| cardStyle | showAccent | Show the accent bar (default on). |
 
 ## Building from source
 

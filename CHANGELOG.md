@@ -9,6 +9,7 @@ exactly as 1.6.0.0 does.
   caption's bold and capitals were fixed in the stylesheet, so the card could not match a report
   whose own cards use regular weight and sentence case. Value > Bold, Caption > Bold and
   Caption > Capitals now switch them; all three are on by default.
+- **The accent bar can be hidden (Format pane > Accent bar > Show).** On by default.
 
 ## 1.6.0.0 (2026-09-23)
 

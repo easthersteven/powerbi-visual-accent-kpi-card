@@ -240,9 +240,11 @@ export class Visual implements IVisual {
 
             let deltaText = "";
 
-            const accent = el("div", "kpi-accent");
-            accent.style.background = accentColorEff;
-            this.target.appendChild(accent);
+            if (s.showAccent) {                                   // Format pane > Accent bar > Show (on by default)
+                const accent = el("div", "kpi-accent");
+                accent.style.background = accentColorEff;
+                this.target.appendChild(accent);
+            }
 
             const body = el("div", "kpi-body");
 
@@ -487,7 +489,8 @@ export class Visual implements IVisual {
                     uid: "kpiAccentCard", displayName: "Accent bar",
                     groups: [{
                         uid: "kpiAccentGroup", displayName: "Accent bar",
-                        slices: [this.colorSlice("kpiAccentSlice", "Colour", "accentColor", s.accentColor)]
+                        slices: [this.toggleSlice("kpiShowAccentSlice", "Show", "showAccent", s.showAccent),
+                                 this.colorSlice("kpiAccentSlice", "Colour", "accentColor", s.accentColor)]
                     }]
                 },
                 {

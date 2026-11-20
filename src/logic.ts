@@ -170,6 +170,7 @@ export interface CardSettings {
     valueBold: boolean;
     captionBold: boolean;
     captionUppercase: boolean;
+    showAccent: boolean;
 }
 
 export const CARD_DEFAULTS: Readonly<CardSettings> = Object.freeze({
@@ -202,6 +203,7 @@ export const CARD_DEFAULTS: Readonly<CardSettings> = Object.freeze({
     valueBold: true,
     captionBold: true,
     captionUppercase: true,
+    showAccent: true,
 });
 
 type Raw = Record<string, unknown> | undefined;
@@ -258,6 +260,7 @@ export function readSettings(rawObjects: unknown): CardSettings {
         valueBold: raw?.["valueBold"] !== false,
         captionBold: raw?.["captionBold"] !== false,
         captionUppercase: raw?.["captionUppercase"] !== false,
+        showAccent: raw?.["showAccent"] !== false,
     };
 }
 

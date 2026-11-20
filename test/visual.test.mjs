@@ -319,6 +319,14 @@ test("value bold and caption bold capitals by default; each can be turned off", 
     assert.equal(element.querySelector(".kpi-caption").style.textTransform, "none");
 });
 
+test("the accent bar shows by default and can be turned off", () => {
+    const { visual, element } = makeVisual();
+    visual.update({ dataViews: [dataView({ main: 42 })] });
+    assert.equal(element.querySelectorAll(".kpi-accent").length, 1);
+    visual.update({ dataViews: [dataView({ main: 42, objects: { cardStyle: { showAccent: false } } })] });
+    assert.equal(element.querySelectorAll(".kpi-accent").length, 0);
+});
+
 test("does not attempt to select when no measure is bound", async () => {
     const { visual, element, captured } = makeVisual();
     visual.update({ dataViews: [{ metadata: {}, categorical: { values: [] } }] });

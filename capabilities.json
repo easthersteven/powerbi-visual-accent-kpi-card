@@ -253,6 +253,11 @@
                     "type": {
                         "bool": true
                     }
+                },
+                "showAccent": {
+                    "type": {
+                        "bool": true
+                    }
                 }
             }
         }
