@@ -42,7 +42,7 @@ export function formatMainValue(mainVal: unknown, valueFormat: string, locale?: 
     if (valueFormat === "currency") {
         const dp = decimalsOf(opts, compact ? 2 : 0);
         const f = intl(locale, compact
-            ? { style: "currency", currency: currencyOf(opts), notation: "compact", maximumFractionDigits: dp }
+            ? { style: "currency", currency: currencyOf(opts), notation: "compact", minimumFractionDigits: 0, maximumFractionDigits: dp }
             : { style: "currency", currency: currencyOf(opts), minimumFractionDigits: dp, maximumFractionDigits: dp });
         if (f) return f.format(mainVal);
     }
